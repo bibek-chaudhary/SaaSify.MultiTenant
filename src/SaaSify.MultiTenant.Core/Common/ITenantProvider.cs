@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace SaaSify.MultiTenant.Core.Common;
 
-namespace SaaSify.MultiTenant.Core.Common
+public interface ITenantProvider
 {
-    internal interface ITenantProvider
-    {
-    }
+    Guid? GetTenantId();
 }

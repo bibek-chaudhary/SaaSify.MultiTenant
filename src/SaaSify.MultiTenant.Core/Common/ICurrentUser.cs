@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace SaaSify.MultiTenant.Core.Common;
 
-namespace SaaSify.MultiTenant.Core.Common
+public interface ICurrentUser
 {
-    internal interface ICurrentUser
-    {
-    }
+    Guid UserId { get; }
+
+    string Email { get; }
+
+    string Role { get; }
+
+    Guid? TenantId { get; }
 }

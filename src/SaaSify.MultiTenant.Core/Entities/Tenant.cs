@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SaaSify.MultiTenant.Core.Common;
 
-namespace SaaSify.MultiTenant.Core.Entities
+namespace SaaSify.MultiTenant.Core.Entities;
+
+public class Tenant : BaseEntity
 {
-    internal class Tenant
-    {
-    }
+    public string Name { get; set; } = default!;
+
+    public string EmailAddress { get; set; } = default!;
+
+    public string TenantId { get; set; } = default!;
+
+    public string DbConnStr { get; set; } = default!;
 }

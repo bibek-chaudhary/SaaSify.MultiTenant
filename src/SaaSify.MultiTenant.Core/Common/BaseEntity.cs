@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace SaaSify.MultiTenant.Core.Common;
 
-namespace SaaSify.MultiTenant.Core.Common
+public abstract class BaseEntity
 {
-    internal class BaseEntity
-    {
-    }
+    public Guid Id { get; set; }
+
+    public DateTime CreatedAtUtc { get; set; }
+
+    public DateTime? UpdatedAtUtc { get; set; }
 }

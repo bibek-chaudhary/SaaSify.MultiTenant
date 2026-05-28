@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace SaaSify.MultiTenant.Shared.Constants;
 
-namespace SaaSify.MultiTenant.Shared.Constants
+public static class ApplicationConstants
 {
-    internal class ApplicationConstants
-    {
-    }
+    public const string ApiVersion = "v1";
+
+    public const string DefaultAdminPassword = "Password@123";
 }

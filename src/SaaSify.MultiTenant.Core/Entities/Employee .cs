@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SaaSify.MultiTenant.Core.Common;
 
-namespace SaaSify.MultiTenant.Core.Entities
+namespace SaaSify.MultiTenant.Core.Entities;
+
+public class Employee : BaseEntity
 {
-    internal class Employee
-    {
-    }
+    public string FullName { get; set; } = default!;
+
+    public string EmailAddress { get; set; } = default!;
 }
