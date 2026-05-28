@@ -10,6 +10,7 @@ using SaaSify.MultiTenant.Infrastructure.Identity;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using SaaSify.MultiTenant.Infrastructure.Identity.Services;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
+using SaaSify.MultiTenant.Infrastructure.Services;
 using System.Text;
 
 namespace SaaSify.MultiTenant.Infrastructure;
@@ -99,8 +100,14 @@ public static class DependencyInjection
             });
         });
 
+        services.AddDbContext<TenantDbContext>(options =>
+        {
+            options.UseNpgsql();
+        });
+
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<ITenantDatabaseService, TenantDatabaseService>();
 
         return services;
     }
