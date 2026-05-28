@@ -10,13 +10,12 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.27" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Common\" />
-    <Folder Include="Features\" />
     <Folder Include="Behaviors\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="DTOs\" />
   </ItemGroup>
 

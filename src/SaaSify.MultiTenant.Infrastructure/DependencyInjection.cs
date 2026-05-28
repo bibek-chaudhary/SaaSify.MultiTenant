@@ -2,7 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Identity.Core;
+using SaaSify.MultiTenant.Application.Interfaces;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
+using SaaSify.MultiTenant.Infrastructure.Identity.Services;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 
 namespace SaaSify.MultiTenant.Infrastructure;
@@ -36,6 +39,9 @@ public static class DependencyInjection
             })
             .AddEntityFrameworkStores<MasterDbContext>()
             .AddDefaultTokenProviders();
+
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IIdentityService, IdentityService>();
 
         return services;
     }
