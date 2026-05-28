@@ -16,6 +16,7 @@
   <ItemGroup>
     <Folder Include="Common\" />
     <Folder Include="DTOs\" />
+    <Folder Include="Features\Tenants\Queries\GetAllTenants\" />
   </ItemGroup>
 
   <PropertyGroup>
