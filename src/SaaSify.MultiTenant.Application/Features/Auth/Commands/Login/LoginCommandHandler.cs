@@ -4,28 +4,22 @@ using SaaSify.MultiTenant.Application.Interfaces;
 
 namespace SaaSify.MultiTenant.Application.Features.Auth.Commands.Login;
 
-public class LoginCommandHandler
-    : IRequestHandler<LoginCommand, AuthResponseDto>
+public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto>
 {
     private readonly IIdentityService _identityService;
 
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public LoginCommandHandler(
-        IIdentityService identityService,
-        IJwtTokenGenerator jwtTokenGenerator)
+    public LoginCommandHandler(IIdentityService identityService, IJwtTokenGenerator jwtTokenGenerator)
     {
         _identityService = identityService;
 
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public async Task<AuthResponseDto> Handle(
-        LoginCommand request,
-        CancellationToken cancellationToken)
+    public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var result =
-            await _identityService.ValidateUserAsync(
+        var result = await _identityService.ValidateUserAsync(
                 request.Email,
                 request.Password);
 
@@ -35,8 +29,7 @@ public class LoginCommandHandler
                 "Invalid credentials.");
         }
 
-        var token =
-            await _jwtTokenGenerator.GenerateTokenAsync(
+        var token = await _jwtTokenGenerator.GenerateTokenAsync(
                 result.UserId,
                 result.Email,
                 result.Role,

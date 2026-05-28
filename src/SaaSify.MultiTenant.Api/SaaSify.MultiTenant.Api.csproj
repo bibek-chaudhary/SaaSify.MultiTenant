@@ -9,17 +9,17 @@
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.*" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.22" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.27" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SaaSify.MultiTenant.Application\SaaSify.MultiTenant.Application.csproj" />
     <ProjectReference Include="..\SaaSify.MultiTenant.Infrastructure\SaaSify.MultiTenant.Infrastructure.csproj" />
+    <ProjectReference Include="..\SaaSify.MultiTenant.Shared\SaaSify.MultiTenant.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Middlewares\" />
     <Folder Include="Configurations\" />
     <Folder Include="Common\" />

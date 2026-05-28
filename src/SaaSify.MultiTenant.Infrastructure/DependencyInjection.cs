@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Identity.Core;
 using SaaSify.MultiTenant.Application.Interfaces;
+using SaaSify.MultiTenant.Infrastructure.Identity;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using SaaSify.MultiTenant.Infrastructure.Identity.Services;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
@@ -21,6 +22,9 @@ public static class DependencyInjection
             options.UseNpgsql(
                 configuration.GetConnectionString("MasterConnection"));
         });
+
+        services.Configure<JwtSettings>(
+           configuration.GetSection("Jwt"));
 
         services
             .AddIdentity<IdentityApplicationUser, IdentityRole<Guid>>(options =>
