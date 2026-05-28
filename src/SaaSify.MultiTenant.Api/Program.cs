@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SaaSify.MultiTenant.Api.Extensions;
+using SaaSify.MultiTenant.Api.Middlewares;
 using SaaSify.MultiTenant.Application;
 using SaaSify.MultiTenant.Infrastructure;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
@@ -66,6 +67,8 @@ if (app.Environment.IsDevelopment())
 
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
