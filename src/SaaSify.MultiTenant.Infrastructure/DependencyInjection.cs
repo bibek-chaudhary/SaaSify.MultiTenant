@@ -10,6 +10,7 @@ using SaaSify.MultiTenant.Infrastructure.Identity;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using SaaSify.MultiTenant.Infrastructure.Identity.Services;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
+using SaaSify.MultiTenant.Infrastructure.Persistence.Repositories;
 using SaaSify.MultiTenant.Infrastructure.Services;
 using System.Text;
 
@@ -108,6 +109,8 @@ public static class DependencyInjection
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<ITenantDatabaseService, TenantDatabaseService>();
+
+        services.AddScoped<ITenantRepository, TenantRepository>();
 
         return services;
     }

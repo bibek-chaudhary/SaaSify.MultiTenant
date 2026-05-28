@@ -6,4 +6,9 @@ public interface IIdentityService
 {
     Task<(bool Success, Guid UserId, string Email, string Role, Guid TenantId)>
         ValidateUserAsync(string email, string password);
+
+    Task CreateTenantAdminAsync(
+        string email,
+        Guid tenantId,
+        string password);
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SaaSify.MultiTenant.Application.Interfaces;
+using SaaSify.MultiTenant.Core.Constants;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 
 namespace SaaSify.MultiTenant.Infrastructure.Identity.Services;
@@ -47,5 +48,33 @@ public class IdentityService : IIdentityService
             role,
             user.TenantId ?? Guid.Empty
         );
+    }
+
+    public async Task CreateTenantAdminAsync(
+        string email,
+        Guid tenantId,
+        string password)
+    {
+        var adminUser =
+            new IdentityApplicationUser
+            {
+                Id = Guid.NewGuid(),
+
+                Email = email,
+
+                UserName = email,
+
+                TenantId = tenantId,
+
+                EmailConfirmed = true
+            };
+
+        await _userManager.CreateAsync(
+            adminUser,
+            password);
+
+        await _userManager.AddToRoleAsync(
+            adminUser,
+            Roles.Admin);
     }
 }

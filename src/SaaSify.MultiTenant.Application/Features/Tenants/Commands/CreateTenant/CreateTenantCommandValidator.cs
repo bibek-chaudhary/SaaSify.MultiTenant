@@ -2,8 +2,7 @@
 
 namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.CreateTenant;
 
-public class CreateTenantCommandValidator
-    : AbstractValidator<CreateTenantCommand>
+public class CreateTenantCommandValidator : AbstractValidator<CreateTenantCommand>
 {
     public CreateTenantCommandValidator()
     {
