@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
-    <Folder Include="Behaviors\" />
     <Folder Include="DTOs\" />
   </ItemGroup>
 
