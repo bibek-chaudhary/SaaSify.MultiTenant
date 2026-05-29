@@ -1,4 +1,4 @@
-﻿namespace SaaSify.MultiTenant.Application.Interfaces;
+﻿namespace SaaSify.MultiTenant.Application.Abstractions.Database;
 
 public interface ITenantDatabaseService
 {

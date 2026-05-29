@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
+using SaaSify.MultiTenant.Application.Abstractions.Database;
+using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Features.Tenants.DTOs;
-using SaaSify.MultiTenant.Application.Interfaces;
 using SaaSify.MultiTenant.Core.Entities;
 
 namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.CreateTenant;

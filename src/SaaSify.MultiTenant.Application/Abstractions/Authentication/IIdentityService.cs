@@ -1,6 +1,6 @@
 ﻿using SaaSify.MultiTenant.Application.Features.Auth.DTOs;
 
-namespace SaaSify.MultiTenant.Application.Interfaces;
+namespace SaaSify.MultiTenant.Application.Abstractions.Authentication;
 
 public interface IIdentityService
 {

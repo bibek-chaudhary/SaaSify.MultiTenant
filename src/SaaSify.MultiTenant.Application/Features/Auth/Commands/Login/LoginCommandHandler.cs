@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Features.Auth.DTOs;
-using SaaSify.MultiTenant.Application.Interfaces;
 
 namespace SaaSify.MultiTenant.Application.Features.Auth.Commands.Login;
 

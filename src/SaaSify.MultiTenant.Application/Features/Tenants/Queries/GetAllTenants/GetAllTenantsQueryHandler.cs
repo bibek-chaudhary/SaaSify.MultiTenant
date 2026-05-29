@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Features.Tenants.DTOs;
-using SaaSify.MultiTenant.Application.Interfaces;
 
 namespace SaaSify.MultiTenant.Application.Features.Tenants.Queries.GetAllTenants;
 

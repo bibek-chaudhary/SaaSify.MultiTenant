@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using SaaSify.MultiTenant.Application.Interfaces;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
+using SaaSify.MultiTenant.Infrastructure.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace SaaSify.MultiTenant.Infrastructure.Identity.Services;
+namespace SaaSify.MultiTenant.Infrastructure.Authentication;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
@@ -27,7 +28,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     {
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+            new(ClaimTypes.NameIdentifier, userId.ToString()),
 
             new(JwtRegisteredClaimNames.Email, email),
 

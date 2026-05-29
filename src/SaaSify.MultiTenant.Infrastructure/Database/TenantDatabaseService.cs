@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using SaaSify.MultiTenant.Application.Interfaces;
+using SaaSify.MultiTenant.Application.Abstractions.Database;
 using SaaSify.MultiTenant.Infrastructure.Configurations;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 using System;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SaaSify.MultiTenant.Infrastructure.Services;
+namespace SaaSify.MultiTenant.Infrastructure.Database;
 public class TenantDatabaseService : ITenantDatabaseService
 {
     private readonly DatabaseSettings _databaseSettings;

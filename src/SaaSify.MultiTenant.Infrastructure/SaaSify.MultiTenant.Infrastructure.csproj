@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="MultiTenancy\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <PropertyGroup>

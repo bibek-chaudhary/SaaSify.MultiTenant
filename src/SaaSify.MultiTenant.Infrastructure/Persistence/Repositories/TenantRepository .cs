@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Features.Tenants.DTOs;
-using SaaSify.MultiTenant.Application.Interfaces;
 using SaaSify.MultiTenant.Core.Entities;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 

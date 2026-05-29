@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SaaSify.MultiTenant.Application.Interfaces;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Core.Constants;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 
-namespace SaaSify.MultiTenant.Infrastructure.Identity.Services;
+namespace SaaSify.MultiTenant.Infrastructure.Authentication;
 
 public class IdentityService : IIdentityService
 {
