@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Identity.Core;
 using Microsoft.IdentityModel.Tokens;
 using SaaSify.MultiTenant.Application.Interfaces;
+using SaaSify.MultiTenant.Infrastructure.Configurations;
 using SaaSify.MultiTenant.Infrastructure.Identity;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using SaaSify.MultiTenant.Infrastructure.Identity.Services;
@@ -22,10 +23,11 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.Configure<DatabaseSettings>(configuration.GetSection("DatabaseSettings"));
+
         services.AddDbContext<MasterDbContext>(options =>
         {
-            options.UseNpgsql(
-                configuration.GetConnectionString("MasterConnection"));
+            options.UseNpgsql(configuration["DatabaseSettings:MasterConnection"]);
         });
 
         services
@@ -103,7 +105,8 @@ public static class DependencyInjection
 
         services.AddDbContext<TenantDbContext>(options =>
         {
-            options.UseNpgsql();
+            options.UseNpgsql(
+                configuration.GetConnectionString("TenantConnection"));
         });
 
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();

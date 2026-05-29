@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using SaaSify.MultiTenant.Application.Interfaces;
+using SaaSify.MultiTenant.Infrastructure.Configurations;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 using System;
 using System.Collections.Generic;
@@ -12,17 +14,17 @@ using System.Threading.Tasks;
 namespace SaaSify.MultiTenant.Infrastructure.Services;
 public class TenantDatabaseService : ITenantDatabaseService
 {
-    private readonly IConfiguration _configuration;
+    private readonly DatabaseSettings _databaseSettings;
 
     public TenantDatabaseService(
-        IConfiguration configuration)
+        IOptions<DatabaseSettings> databaseOptions)
     {
-        _configuration = configuration;
+        _databaseSettings = databaseOptions.Value;
     }
 
     public async Task<string> CreateTenantDatabaseAsync( string tenantIdentifier)
     {
-        var masterConnection = _configuration.GetConnectionString("MasterDatabase");
+        var masterConnection = _databaseSettings.MasterConnection;
 
         var builder = new NpgsqlConnectionStringBuilder(masterConnection);
 

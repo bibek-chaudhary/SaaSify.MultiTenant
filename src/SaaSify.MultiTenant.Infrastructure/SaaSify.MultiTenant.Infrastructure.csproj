@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="MultiTenancy\" />
-    <Folder Include="Configurations\" />
   </ItemGroup>
 
   <PropertyGroup>

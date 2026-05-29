@@ -5,8 +5,7 @@ namespace SaaSify.MultiTenant.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddPresentation(
-        this IServiceCollection services)
+    public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers();
 
@@ -40,15 +39,10 @@ public static class ServiceCollectionExtensions
                 new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-
                     Type = SecuritySchemeType.Http,
-
                     Scheme = "bearer",
-
                     BearerFormat = "JWT",
-
                     In = ParameterLocation.Header,
-
                     Description = "Enter JWT token"
                 });
 
