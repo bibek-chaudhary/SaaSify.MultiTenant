@@ -1,18 +1,18 @@
 ﻿using FluentValidation;
 
-namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
+namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.UpdateTenant;
 
-public sealed class UpdateEmployeeCommandValidator
-    : AbstractValidator<UpdateEmployeeCommand>
+public sealed class UpdateTenantCommandValidator
+    : AbstractValidator<UpdateTenantCommand>
 {
-    public UpdateEmployeeCommandValidator()
+    public UpdateTenantCommandValidator()
     {
         RuleFor(x => x.Id)
             .NotEmpty();
 
         RuleFor(x => x)
             .Must(x =>
-                !string.IsNullOrWhiteSpace(x.FullName) ||
+                !string.IsNullOrWhiteSpace(x.Name) ||
                 !string.IsNullOrWhiteSpace(x.EmailAddress))
             .WithMessage("At least one field must be provided.");
 

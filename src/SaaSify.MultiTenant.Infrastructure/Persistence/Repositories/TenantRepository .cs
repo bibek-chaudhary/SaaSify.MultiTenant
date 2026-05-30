@@ -39,4 +39,34 @@ public class TenantRepository : ITenantRepository
             })
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<Tenant?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Tenants
+            .FirstOrDefaultAsync(
+                x => x.Id == id,
+                cancellationToken);
+    }
+
+    public async Task UpdateAsync(
+        Tenant tenant,
+        CancellationToken cancellationToken)
+    {
+        _context.Tenants.Update(tenant);
+
+        await _context.SaveChangesAsync(
+            cancellationToken);
+    }
+
+    public async Task DeleteAsync(
+        Tenant tenant,
+        CancellationToken cancellationToken)
+    {
+        _context.Tenants.Remove(tenant);
+
+        await _context.SaveChangesAsync(
+            cancellationToken);
+    }
 }

@@ -4,6 +4,6 @@ namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmpl
 
 public sealed record UpdateEmployeeCommand(
     Guid Id,
-    string FullName,
-    string EmailAddress)
+    string? FullName,
+    string? EmailAddress)
     : IRequest<bool>;

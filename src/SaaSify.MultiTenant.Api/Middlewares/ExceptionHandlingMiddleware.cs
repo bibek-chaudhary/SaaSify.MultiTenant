@@ -52,7 +52,7 @@ public class ExceptionHandlingMiddleware
             case ValidationException validationException:
 
                 context.Response.StatusCode =
-                    (int)HttpStatusCode.BadRequest;
+                    StatusCodes.Status400BadRequest;
 
                 response.Success = false;
 
@@ -68,7 +68,40 @@ public class ExceptionHandlingMiddleware
             case UnauthorizedAccessException:
 
                 context.Response.StatusCode =
-                    (int)HttpStatusCode.Unauthorized;
+                    StatusCodes.Status401Unauthorized;
+
+                response.Success = false;
+
+                response.Message = exception.Message;
+
+                break;
+
+            case KeyNotFoundException:
+
+                context.Response.StatusCode =
+                    StatusCodes.Status404NotFound;
+
+                response.Success = false;
+
+                response.Message = exception.Message;
+
+                break;
+
+            case InvalidOperationException:
+
+                context.Response.StatusCode =
+                    StatusCodes.Status409Conflict;
+
+                response.Success = false;
+
+                response.Message = exception.Message;
+
+                break;
+
+            case ApplicationException:
+
+                context.Response.StatusCode =
+                    StatusCodes.Status400BadRequest;
 
                 response.Success = false;
 
@@ -79,7 +112,7 @@ public class ExceptionHandlingMiddleware
             default:
 
                 context.Response.StatusCode =
-                    (int)HttpStatusCode.InternalServerError;
+                    StatusCodes.Status500InternalServerError;
 
                 response.Success = false;
 

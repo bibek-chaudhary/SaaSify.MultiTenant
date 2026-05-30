@@ -29,14 +29,17 @@ public sealed class UpdateEmployeeCommandHandler
                 "Employee not found.");
         }
 
-        employee.FullName =
-            request.FullName;
+        if (!string.IsNullOrWhiteSpace(request.FullName))
+        {
+            employee.FullName = request.FullName;
+        }
 
-        employee.EmailAddress =
-            request.EmailAddress;
+        if (!string.IsNullOrWhiteSpace(request.EmailAddress))
+        {
+            employee.EmailAddress = request.EmailAddress;
+        }
 
-        employee.UpdatedAtUtc =
-            DateTime.UtcNow;
+        employee.UpdatedAtUtc = DateTime.UtcNow;
 
         await _employeeRepository.UpdateAsync(
             employee,

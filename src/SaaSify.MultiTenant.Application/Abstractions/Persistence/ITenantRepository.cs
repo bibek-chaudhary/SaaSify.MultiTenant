@@ -11,4 +11,16 @@ public interface ITenantRepository
 
     Task<List<TenantResponseDto>> GetAllAsync(
         CancellationToken cancellationToken);
+
+    Task<Tenant?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken);
+
+    Task UpdateAsync(
+        Tenant tenant,
+        CancellationToken cancellationToken);
+
+    Task DeleteAsync(
+        Tenant tenant,
+        CancellationToken cancellationToken);
 }

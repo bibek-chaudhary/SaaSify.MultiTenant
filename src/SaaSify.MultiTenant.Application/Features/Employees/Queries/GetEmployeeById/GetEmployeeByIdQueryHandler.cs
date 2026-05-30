@@ -26,7 +26,7 @@ public sealed class GetEmployeeByIdQueryHandler
 
         if (employee is null)
         {
-            throw new KeyNotFoundException(
+            throw new ApplicationException(
                 "Employee not found.");
         }
 
