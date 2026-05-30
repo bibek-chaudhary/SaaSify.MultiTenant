@@ -46,7 +46,10 @@ namespace SaaSify.MultiTenant.Infrastructure.Persistence.TenantMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.HasIndex("EmailAddress")
+                        .IsUnique();
+
+                    b.ToTable("Employees", (string)null);
                 });
 #pragma warning restore 612, 618
         }

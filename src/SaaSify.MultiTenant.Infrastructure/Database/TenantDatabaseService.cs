@@ -46,6 +46,8 @@ public class TenantDatabaseService : ITenantDatabaseService
 
         await command.ExecuteNonQueryAsync();
 
+        builder.Database = databaseName;
+
         var tenantConnectionString = builder.ConnectionString;
 
         var options = new DbContextOptionsBuilder<TenantDbContext>()
