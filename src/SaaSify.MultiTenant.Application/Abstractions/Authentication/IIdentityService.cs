@@ -11,4 +11,10 @@ public interface IIdentityService
         string email,
         Guid tenantId,
         string password);
+
+    Task<Guid> RegisterUserAsync(
+        string email,
+        string password,
+        string role,
+        Guid tenantId);
 }

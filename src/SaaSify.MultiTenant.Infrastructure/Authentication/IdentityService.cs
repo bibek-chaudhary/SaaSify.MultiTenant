@@ -77,4 +77,48 @@ public class IdentityService : IIdentityService
             adminUser,
             Roles.Admin);
     }
+
+    public async Task<Guid> RegisterUserAsync(
+        string email,
+        string password,
+        string role,
+    Guid tenantId)
+    {
+        var existingUser =
+            await _userManager.FindByEmailAsync(email);
+
+        if (existingUser is not null)
+        {
+            throw new ApplicationException(
+                "User already exists.");
+        }
+
+        var user =
+            new IdentityApplicationUser
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                UserName = email,
+                TenantId = tenantId,
+                EmailConfirmed = true
+            };
+
+        var result =
+            await _userManager.CreateAsync(
+                user,
+                password);
+
+        if (!result.Succeeded)
+        {
+            throw new ApplicationException(
+                string.Join(", ",
+                    result.Errors.Select(x => x.Description)));
+        }
+
+        await _userManager.AddToRoleAsync(
+            user,
+            role);
+
+        return user.Id;
+    }
 }
