@@ -16,4 +16,15 @@ public interface IEmployeeRepository
     Task<bool> EmailExistsAsync(
         string emailAddress,
         CancellationToken cancellationToken);
+
+    Task<List<Employee>> GetAllAsync(
+    CancellationToken cancellationToken);
+
+    Task<Employee?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken);
+
+    Task<Employee?> GetByEmailAsync(
+        string emailAddress,
+        CancellationToken cancellationToken);
 }

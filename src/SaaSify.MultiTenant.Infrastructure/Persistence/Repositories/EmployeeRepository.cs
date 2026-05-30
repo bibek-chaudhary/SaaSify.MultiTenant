@@ -39,4 +39,32 @@ public sealed class EmployeeRepository
                 x => x.EmailAddress == emailAddress,
                 cancellationToken);
     }
+
+    public async Task<List<Employee>> GetAllAsync(
+    CancellationToken cancellationToken)
+    {
+        return await _context.Employees
+            .OrderBy(x => x.FullName)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Employee?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Employees
+            .FirstOrDefaultAsync(
+                x => x.Id == id,
+                cancellationToken);
+    }
+
+    public async Task<Employee?> GetByEmailAsync(
+        string emailAddress,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Employees
+            .FirstOrDefaultAsync(
+                x => x.EmailAddress == emailAddress,
+                cancellationToken);
+    }
 }
