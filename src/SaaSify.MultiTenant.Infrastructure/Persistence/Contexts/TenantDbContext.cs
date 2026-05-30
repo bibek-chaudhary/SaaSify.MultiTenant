@@ -14,21 +14,11 @@ public class TenantDbContext : DbContext
     public DbSet<Employee> Employees => Set<Employee>();
 
     protected override void OnModelCreating(
-        ModelBuilder builder)
+     ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(builder);
+        base.OnModelCreating(modelBuilder);
 
-        builder.Entity<Employee>(entity =>
-        {
-            entity.HasKey(x => x.Id);
-
-            entity.Property(x => x.FullName)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            entity.Property(x => x.EmailAddress)
-                .IsRequired()
-                .HasMaxLength(200);
-        });
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            typeof(TenantDbContext).Assembly);
     }
 }

@@ -30,7 +30,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         {
             new(ClaimTypes.NameIdentifier, userId.ToString()),
 
-            new(JwtRegisteredClaimNames.Email, email),
+            new(ClaimTypes.Email, email),
 
             new(ClaimTypes.Role, role)
         };
