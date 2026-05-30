@@ -8,11 +8,13 @@ using Microsoft.IdentityModel.Tokens;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Database;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Common.Interfaces;
 using SaaSify.MultiTenant.Infrastructure.Authentication;
 using SaaSify.MultiTenant.Infrastructure.Configurations;
 using SaaSify.MultiTenant.Infrastructure.Database;
 using SaaSify.MultiTenant.Infrastructure.Identity;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
+using SaaSify.MultiTenant.Infrastructure.MultiTenancy;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Repositories;
 using System.Text;
@@ -25,12 +27,33 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddHttpContextAccessor();
+
         services.Configure<DatabaseSettings>(configuration.GetSection("DatabaseSettings"));
 
         services.AddDbContext<MasterDbContext>(options =>
         {
             options.UseNpgsql(configuration["DatabaseSettings:MasterConnection"]);
         });
+
+        services.AddDbContext<TenantDbContext>(
+            (serviceProvider, options) =>
+            {
+                var tenantProvider =
+                    serviceProvider
+                        .GetRequiredService<ITenantProvider>();
+
+                var tenant =
+                    tenantProvider.GetCurrentTenant();
+
+                if (tenant is null)
+                {
+                    return;
+                }
+
+                options.UseNpgsql(
+                    tenant.ConnectionString);
+            });
 
         services
             .AddIdentity<IdentityApplicationUser, IdentityRole<Guid>>(options =>
@@ -116,6 +139,10 @@ public static class DependencyInjection
         services.AddScoped<ITenantDatabaseService, TenantDatabaseService>();
 
         services.AddScoped<ITenantRepository, TenantRepository>();
+
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        services.AddScoped<ITenantProvider, TenantProvider>();
 
         return services;
     }
