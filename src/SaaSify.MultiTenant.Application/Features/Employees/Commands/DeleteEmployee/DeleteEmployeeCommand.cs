@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
-namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee
-{
-    internal class DeleteEmployeeCommand
-    {
-    }
-}
+namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee;
+
+public sealed record DeleteEmployeeCommand(
+    Guid Id)
+    : IRequest<bool>;

@@ -67,4 +67,24 @@ public sealed class EmployeeRepository
                 x => x.EmailAddress == email,
                 cancellationToken);
     }
+
+    public async Task UpdateAsync(
+        Employee employee,
+        CancellationToken cancellationToken)
+    {
+        _context.Employees.Update(employee);
+
+        await _context.SaveChangesAsync(
+            cancellationToken);
+    }
+
+    public async Task DeleteAsync(
+        Employee employee,
+        CancellationToken cancellationToken)
+    {
+        _context.Employees.Remove(employee);
+
+        await _context.SaveChangesAsync(
+            cancellationToken);
+    }
 }

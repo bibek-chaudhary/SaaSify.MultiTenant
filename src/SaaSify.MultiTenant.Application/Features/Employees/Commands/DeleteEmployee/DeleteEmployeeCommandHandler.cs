@@ -1,12 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee;
 
-namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee
+namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
+
+public sealed class DeleteEmployeeCommandHandler
+    : IRequestHandler<DeleteEmployeeCommand, bool>
 {
-    internal class DeleteEmployeeCommandHandler
+    private readonly IEmployeeRepository _employeeRepository;
+
+    public DeleteEmployeeCommandHandler(
+        IEmployeeRepository employeeRepository)
     {
+        _employeeRepository = employeeRepository;
+    }
+
+    public async Task<bool> Handle(
+    DeleteEmployeeCommand request,
+    CancellationToken cancellationToken)
+    {
+        var employee =
+            await _employeeRepository.GetByIdAsync(
+                request.Id,
+                cancellationToken);
+
+        if (employee is null)
+        {
+            throw new ApplicationException(
+                "Employee not found.");
+        }
+
+        await _employeeRepository.DeleteAsync(
+            employee,
+            cancellationToken);
+
+        return true;
     }
 }

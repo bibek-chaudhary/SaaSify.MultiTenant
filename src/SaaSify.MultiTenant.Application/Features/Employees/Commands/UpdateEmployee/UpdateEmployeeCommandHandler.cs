@@ -1,10 +1,7 @@
 ﻿using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
-using SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
-using SaaSify.MultiTenant.Application.Features.Employees.DTOs;
-using SaaSify.MultiTenant.Core.Entities;
 
-namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.CreateEmployee;
+namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
 
 public sealed class UpdateEmployeeCommandHandler
     : IRequestHandler<UpdateEmployeeCommand, bool>

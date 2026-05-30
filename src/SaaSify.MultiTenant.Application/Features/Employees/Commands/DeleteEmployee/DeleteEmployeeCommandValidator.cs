@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 
-namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee
+namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee;
+
+public sealed class DeleteEmployeeCommandValidator
+    : AbstractValidator<DeleteEmployeeCommand>
 {
-    internal class DeleteEmployeeCommandValidator
+    public DeleteEmployeeCommandValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty();
     }
 }

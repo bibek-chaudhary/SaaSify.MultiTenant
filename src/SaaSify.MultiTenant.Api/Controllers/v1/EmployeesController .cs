@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaaSify.MultiTenant.Application.Features.Employees.Commands.CreateEmployee;
+using SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee;
 using SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
 using SaaSify.MultiTenant.Application.Features.Employees.DTOs;
 using SaaSify.MultiTenant.Application.Features.Employees.Queries.GetEmployeeById;
@@ -95,5 +96,19 @@ public class EmployeesController : ControllerBase
             ApiResponse<bool>.SuccessResponse(
                 result,
                 "Employee updated."));
+    }
+
+    [Authorize(Roles = Roles.Admin)]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+    Guid id)
+    {
+        await _mediator.Send(
+            new DeleteEmployeeCommand(id));
+
+        return Ok(
+            ApiResponse<bool>.SuccessResponse(
+                true,
+                "Employee deleted."));
     }
 }

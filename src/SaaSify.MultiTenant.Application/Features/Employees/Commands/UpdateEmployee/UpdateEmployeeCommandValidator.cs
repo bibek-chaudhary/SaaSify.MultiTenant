@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 
-namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee
+namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
+
+public sealed class UpdateEmployeeCommandValidator
+    : AbstractValidator<UpdateEmployeeCommand>
 {
-    internal class UpdateEmployeeCommandValidator
+    public UpdateEmployeeCommandValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty();
+
+        RuleFor(x => x.FullName)
+            .NotEmpty()
+            .MaximumLength(200);
+
+        RuleFor(x => x.EmailAddress)
+            .NotEmpty()
+            .EmailAddress();
     }
 }

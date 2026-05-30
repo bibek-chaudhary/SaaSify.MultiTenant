@@ -31,4 +31,8 @@ public interface IEmployeeRepository
     Task UpdateAsync(
         Employee employee,
         CancellationToken cancellationToken);
+
+    Task DeleteAsync(
+        Employee employee,
+        CancellationToken cancellationToken);
 }
