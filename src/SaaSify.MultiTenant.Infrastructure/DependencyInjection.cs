@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Identity.Core;
 using Microsoft.IdentityModel.Tokens;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Database;
@@ -17,6 +17,7 @@ using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using SaaSify.MultiTenant.Infrastructure.MultiTenancy;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Repositories;
+using SaaSify.MultiTenant.Shared.Responses;
 using System.Text;
 
 namespace SaaSify.MultiTenant.Infrastructure;
@@ -108,6 +109,35 @@ public static class DependencyInjection
                         new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(jwtSettings.Key))
                 };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnChallenge = async context =>
+                {
+                    context.HandleResponse();
+
+                    context.Response.StatusCode = 401;
+
+                    await context.Response.WriteAsJsonAsync(
+                        new ApiResponse<object>
+                        {
+                            Success = false,
+                            Message = "Authentication required."
+                        });
+                },
+
+                OnForbidden = async context =>
+                {
+                    context.Response.StatusCode = 403;
+
+                    await context.Response.WriteAsJsonAsync(
+                        new ApiResponse<object>
+                        {
+                            Success = false,
+                            Message = "Access denied."
+                        });
+                }
+            };
         });
 
         services.AddAuthorization(options =>
