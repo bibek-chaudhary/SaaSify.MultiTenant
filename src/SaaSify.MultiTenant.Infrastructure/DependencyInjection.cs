@@ -143,6 +143,7 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         services.AddScoped<ITenantProvider, TenantProvider>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
         return services;
     }
