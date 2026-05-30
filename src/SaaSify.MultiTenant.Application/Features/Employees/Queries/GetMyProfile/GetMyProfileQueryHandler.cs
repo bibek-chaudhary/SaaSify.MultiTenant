@@ -31,7 +31,7 @@ public sealed class GetMyProfileQueryHandler
 
         if (employee is null)
         {
-            throw new KeyNotFoundException(
+            throw new ApplicationException(
                 "Employee profile not found.");
         }
 

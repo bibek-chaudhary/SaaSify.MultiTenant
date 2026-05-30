@@ -59,12 +59,12 @@ public sealed class EmployeeRepository
     }
 
     public async Task<Employee?> GetByEmailAsync(
-        string emailAddress,
+        string email,
         CancellationToken cancellationToken)
     {
         return await _context.Employees
             .FirstOrDefaultAsync(
-                x => x.EmailAddress == emailAddress,
+                x => x.EmailAddress == email,
                 cancellationToken);
     }
 }

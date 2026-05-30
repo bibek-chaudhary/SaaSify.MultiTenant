@@ -21,10 +21,14 @@ public interface IEmployeeRepository
     CancellationToken cancellationToken);
 
     Task<Employee?> GetByIdAsync(
-        Guid id,
-        CancellationToken cancellationToken);
+    Guid id,
+    CancellationToken cancellationToken);
 
     Task<Employee?> GetByEmailAsync(
-        string emailAddress,
+        string email,
+        CancellationToken cancellationToken);
+
+    Task UpdateAsync(
+        Employee employee,
         CancellationToken cancellationToken);
 }

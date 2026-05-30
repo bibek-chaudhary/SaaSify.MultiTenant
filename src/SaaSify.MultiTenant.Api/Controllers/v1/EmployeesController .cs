@@ -3,10 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaaSify.MultiTenant.Application.Features.Employees.Commands.CreateEmployee;
+using SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
 using SaaSify.MultiTenant.Application.Features.Employees.DTOs;
 using SaaSify.MultiTenant.Application.Features.Employees.Queries.GetEmployeeById;
 using SaaSify.MultiTenant.Application.Features.Employees.Queries.GetEmployees;
 using SaaSify.MultiTenant.Application.Features.Employees.Queries.GetMyProfile;
+using SaaSify.MultiTenant.Core.Constants;
 using SaaSify.MultiTenant.Shared.Responses;
 
 namespace SaaSify.MultiTenant.Api.Controllers.v1;
@@ -66,16 +68,32 @@ public class EmployeesController : ControllerBase
                 .SuccessResponse(result));
     }
 
-    [Authorize(Roles = "Employee")]
+    [Authorize(Roles = Roles.Employee)]
     [HttpGet("me")]
     public async Task<IActionResult> GetMyProfile()
     {
-        var result =
+        var response =
             await _mediator.Send(
                 new GetMyProfileQuery());
 
         return Ok(
             ApiResponse<EmployeeResponseDto>
-                .SuccessResponse(result));
+                .SuccessResponse(
+                    response,
+                    "Employee profile retrieved."));
+    }
+
+    [Authorize(Roles = Roles.Admin)]
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(
+        Guid id,
+        UpdateEmployeeCommand request)
+    {
+        var result = await _mediator.Send(request with { Id = id });
+
+        return Ok(  
+            ApiResponse<bool>.SuccessResponse(
+                result,
+                "Employee updated."));
     }
 }
