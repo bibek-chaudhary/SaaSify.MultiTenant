@@ -27,7 +27,7 @@ public class EmployeesController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     [HttpPost]
     public async Task<IActionResult> CreateEmployee(
         CreateEmployeeCommand command)
@@ -42,7 +42,7 @@ public class EmployeesController : ControllerBase
                     "Employee created successfully."));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     [HttpGet]
     public async Task<IActionResult> GetEmployees()
     {
@@ -55,7 +55,7 @@ public class EmployeesController : ControllerBase
                 .SuccessResponse(result));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetEmployeeById(
     Guid id)
@@ -69,7 +69,7 @@ public class EmployeesController : ControllerBase
                 .SuccessResponse(result));
     }
 
-    [Authorize(Roles = Roles.Employee)]
+    [Authorize(Policy = "EmployeeOnly")]
     [HttpGet("me")]
     public async Task<IActionResult> GetMyProfile()
     {
@@ -84,7 +84,7 @@ public class EmployeesController : ControllerBase
                     "Employee profile retrieved."));
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Policy = "AdminOnly")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(
         Guid id,
@@ -98,7 +98,7 @@ public class EmployeesController : ControllerBase
                 "Employee updated."));
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Policy = "AdminOnly")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
     Guid id)
