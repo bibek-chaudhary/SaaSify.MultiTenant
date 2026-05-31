@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee;
@@ -10,15 +11,19 @@ public sealed class DeleteEmployeeCommandHandler
 {
     private readonly IEmployeeRepository _employeeRepository;
 
+    private readonly IIdentityService _identityService;
+
     public DeleteEmployeeCommandHandler(
-        IEmployeeRepository employeeRepository)
+        IEmployeeRepository employeeRepository,
+        IIdentityService identityService)
     {
         _employeeRepository = employeeRepository;
+        _identityService = identityService;
     }
 
     public async Task<bool> Handle(
-    DeleteEmployeeCommand request,
-    CancellationToken cancellationToken)
+        DeleteEmployeeCommand request,
+        CancellationToken cancellationToken)
     {
         var employee =
             await _employeeRepository.GetByIdAsync(
@@ -34,6 +39,8 @@ public sealed class DeleteEmployeeCommandHandler
         await _employeeRepository.DeleteAsync(
             employee,
             cancellationToken);
+
+        await _identityService.DeleteUserAsync(employee.EmailAddress);
 
         return true;
     }

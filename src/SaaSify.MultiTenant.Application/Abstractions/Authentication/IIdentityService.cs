@@ -17,4 +17,6 @@ public interface IIdentityService
         string password,
         string role,
         Guid tenantId);
+
+    Task DeleteUserAsync(string email);
 }

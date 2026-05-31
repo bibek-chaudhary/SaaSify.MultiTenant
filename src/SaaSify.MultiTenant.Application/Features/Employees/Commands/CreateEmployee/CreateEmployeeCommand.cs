@@ -5,5 +5,6 @@ namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.CreateEmpl
 
 public sealed record CreateEmployeeCommand(
     string FullName,
-    string EmailAddress)
+    string EmailAddress,
+    string Password)
     : IRequest<EmployeeResponseDto>;

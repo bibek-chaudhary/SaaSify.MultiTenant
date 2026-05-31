@@ -14,5 +14,9 @@ public sealed class CreateEmployeeCommandValidator
         RuleFor(x => x.EmailAddress)
             .NotEmpty()
             .EmailAddress();
+
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .MinimumLength(8);
     }
 }

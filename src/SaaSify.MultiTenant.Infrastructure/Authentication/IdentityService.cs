@@ -122,4 +122,18 @@ public class IdentityService : IIdentityService
 
         return user.Id;
     }
+
+    public async Task DeleteUserAsync(string email)
+    {
+        var user =
+            await _userManager.FindByEmailAsync(email);
+
+        if (user is null)
+        {
+            throw new NotFoundException(
+                $"Identity user '{email}' not found.");     
+        }
+
+        await _userManager.DeleteAsync(user);
+    }
 }
