@@ -1,5 +1,7 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using SaaSify.MultiTenant.Api.Responses;
 
 namespace SaaSify.MultiTenant.Api.Extensions;
 
@@ -63,6 +65,40 @@ public static class ServiceCollectionExtensions
                     }
                 });
         });
+
+        services.PostConfigure<JwtBearerOptions>(
+            JwtBearerDefaults.AuthenticationScheme,
+            options =>
+            {
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+
+                        context.Response.StatusCode = 401;
+
+                        await context.Response.WriteAsJsonAsync(
+                            new ApiResponse<object>
+                            {
+                                Success = false,
+                                Message = "Authentication required."
+                            });
+                    },
+
+                    OnForbidden = async context =>
+                    {
+                        context.Response.StatusCode = 403;
+
+                        await context.Response.WriteAsJsonAsync(
+                            new ApiResponse<object>
+                            {
+                                Success = false,
+                                Message = "Access denied."
+                            });
+                    }
+                };
+            });
 
         return services;
     }

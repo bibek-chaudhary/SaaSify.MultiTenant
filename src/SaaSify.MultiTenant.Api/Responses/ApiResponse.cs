@@ -1,4 +1,4 @@
-﻿namespace SaaSify.MultiTenant.Shared.Responses;
+namespace SaaSify.MultiTenant.Api.Responses;
 
 public class ApiResponse<T>
 {

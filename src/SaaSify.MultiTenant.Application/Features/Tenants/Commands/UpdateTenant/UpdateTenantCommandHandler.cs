@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
 
 namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.UpdateTenant;
 
@@ -26,7 +27,7 @@ public class UpdateTenantCommandHandler
 
         if (tenant is null)
         {
-            throw new KeyNotFoundException(
+            throw new NotFoundException(
                 "Tenant not found.");
         }
 

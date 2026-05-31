@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Application.Features.Employees.DTOs;
 
 namespace SaaSify.MultiTenant.Application.Features.Employees.Queries.GetEmployeeById;
@@ -26,7 +27,7 @@ public sealed class GetEmployeeByIdQueryHandler
 
         if (employee is null)
         {
-            throw new ApplicationException(
+            throw new NotFoundException(
                 "Employee not found.");
         }
 

@@ -1,4 +1,4 @@
-﻿namespace SaaSify.MultiTenant.Core.Common;
+namespace SaaSify.MultiTenant.Application.Common;
 
 public class TenantInfo
 {

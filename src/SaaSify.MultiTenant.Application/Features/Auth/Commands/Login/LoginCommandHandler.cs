@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
+using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Application.Features.Auth.DTOs;
 
 namespace SaaSify.MultiTenant.Application.Features.Auth.Commands.Login;
@@ -25,7 +26,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
 
         if (!result.Success)
         {
-            throw new UnauthorizedAccessException(
+            throw new UnauthorizedException(
                 "Invalid credentials.");
         }
 

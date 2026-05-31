@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SaaSify.MultiTenant.Core\SaaSify.MultiTenant.Core.csproj" />
-    <ProjectReference Include="..\SaaSify.MultiTenant.Shared\SaaSify.MultiTenant.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

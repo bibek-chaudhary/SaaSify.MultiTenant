@@ -10,7 +10,7 @@ using SaaSify.MultiTenant.Application.Features.Employees.Queries.GetEmployeeById
 using SaaSify.MultiTenant.Application.Features.Employees.Queries.GetEmployees;
 using SaaSify.MultiTenant.Application.Features.Employees.Queries.GetMyProfile;
 using SaaSify.MultiTenant.Core.Constants;
-using SaaSify.MultiTenant.Shared.Responses;
+using SaaSify.MultiTenant.Api.Responses;
 
 namespace SaaSify.MultiTenant.Api.Controllers.v1;
 

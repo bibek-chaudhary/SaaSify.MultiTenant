@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SaaSify.MultiTenant.Application.Features.Auth.Commands.Login;
 using SaaSify.MultiTenant.Application.Features.Auth.DTOs;
-using SaaSify.MultiTenant.Shared.Responses;
+using SaaSify.MultiTenant.Api.Responses;
 
 namespace SaaSify.MultiTenant.Api.Controllers.v1;
 

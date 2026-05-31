@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Application.Features.Employees.DTOs;
 
 namespace SaaSify.MultiTenant.Application.Features.Employees.Queries.GetMyProfile;
@@ -31,7 +32,7 @@ public sealed class GetMyProfileQueryHandler
 
         if (employee is null)
         {
-            throw new ApplicationException(
+            throw new NotFoundException(
                 "Employee profile not found.");
         }
 

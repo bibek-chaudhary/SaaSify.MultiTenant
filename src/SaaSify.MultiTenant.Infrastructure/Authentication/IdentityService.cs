@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
+using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Core.Constants;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 
@@ -89,7 +90,7 @@ public class IdentityService : IIdentityService
 
         if (existingUser is not null)
         {
-            throw new ApplicationException(
+            throw new ConflictException(
                 "User already exists.");
         }
 
@@ -110,7 +111,7 @@ public class IdentityService : IIdentityService
 
         if (!result.Succeeded)
         {
-            throw new ApplicationException(
+            throw new ConflictException(
                 string.Join(", ",
                     result.Errors.Select(x => x.Description)));
         }

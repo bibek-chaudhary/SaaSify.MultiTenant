@@ -1,4 +1,4 @@
-﻿using SaaSify.MultiTenant.Core.Common;
+using SaaSify.MultiTenant.Application.Common;
 
 namespace SaaSify.MultiTenant.Application.Common.Interfaces;
 

@@ -1,6 +1,7 @@
-﻿using System.Net;
 using FluentValidation;
-using SaaSify.MultiTenant.Shared.Responses;
+using SaaSify.MultiTenant.Application.Exceptions;
+using SaaSify.MultiTenant.Api.Responses;
+using System.Net;
 
 namespace SaaSify.MultiTenant.Api.Middlewares;
 
@@ -65,7 +66,7 @@ public class ExceptionHandlingMiddleware
 
                 break;
 
-            case UnauthorizedAccessException:
+            case UnauthorizedException:
 
                 context.Response.StatusCode =
                     StatusCodes.Status401Unauthorized;
@@ -76,7 +77,7 @@ public class ExceptionHandlingMiddleware
 
                 break;
 
-            case KeyNotFoundException:
+            case NotFoundException:
 
                 context.Response.StatusCode =
                     StatusCodes.Status404NotFound;
@@ -87,7 +88,7 @@ public class ExceptionHandlingMiddleware
 
                 break;
 
-            case InvalidOperationException:
+            case ConflictException:
 
                 context.Response.StatusCode =
                     StatusCodes.Status409Conflict;

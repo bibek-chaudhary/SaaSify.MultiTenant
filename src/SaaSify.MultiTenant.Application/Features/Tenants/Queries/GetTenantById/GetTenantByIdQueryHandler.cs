@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Application.Features.Tenants.DTOs;
 
 namespace SaaSify.MultiTenant.Application.Features.Tenants.Queries.GetTenantById;
@@ -28,7 +29,7 @@ public class GetTenantByIdQueryHandler
 
         if (tenant is null)
         {
-            throw new ApplicationException(
+            throw new NotFoundException(
                 "Tenant not found.");
         }
 

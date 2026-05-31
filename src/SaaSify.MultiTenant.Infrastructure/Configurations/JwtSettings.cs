@@ -1,4 +1,4 @@
-﻿namespace SaaSify.MultiTenant.Infrastructure.Identity;
+namespace SaaSify.MultiTenant.Infrastructure.Configurations;
 
 public class JwtSettings
 {

@@ -1,8 +1,9 @@
-﻿using MediatR;
+using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Database;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
 
-namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.DeleteCommand;
+namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.DeleteTenant;
 
 public class DeleteTenantCommandHandler
     : IRequestHandler<DeleteTenantCommand, bool>
@@ -29,7 +30,7 @@ public class DeleteTenantCommandHandler
 
         if (tenant is null)
         {
-            throw new KeyNotFoundException(
+            throw new NotFoundException(
                 "Tenant not found.");
         }
 

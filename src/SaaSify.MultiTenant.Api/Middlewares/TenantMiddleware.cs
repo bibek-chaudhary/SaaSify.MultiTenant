@@ -1,6 +1,6 @@
-﻿using SaaSify.MultiTenant.Application.Abstractions.Authentication;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
+using SaaSify.MultiTenant.Application.Common;
 using SaaSify.MultiTenant.Application.Common.Interfaces;
-using SaaSify.MultiTenant.Core.Common;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 
 namespace SaaSify.MultiTenant.Api.Middlewares;

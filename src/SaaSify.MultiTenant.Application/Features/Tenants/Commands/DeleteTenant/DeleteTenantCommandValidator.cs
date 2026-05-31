@@ -1,6 +1,6 @@
-﻿using FluentValidation;
+using FluentValidation;
 
-namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.DeleteCommand;
+namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.DeleteTenant;
 
 public class DeleteTenantCommandValidator : AbstractValidator<DeleteTenantCommand>
 {

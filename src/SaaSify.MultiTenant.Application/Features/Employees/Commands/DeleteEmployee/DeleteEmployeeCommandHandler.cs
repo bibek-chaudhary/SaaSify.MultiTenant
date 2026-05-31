@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Application.Features.Employees.Commands.DeleteEmployee;
 
 namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
@@ -26,7 +27,7 @@ public sealed class DeleteEmployeeCommandHandler
 
         if (employee is null)
         {
-            throw new KeyNotFoundException(
+            throw new NotFoundException(
                 "Employee not found.");
         }
 

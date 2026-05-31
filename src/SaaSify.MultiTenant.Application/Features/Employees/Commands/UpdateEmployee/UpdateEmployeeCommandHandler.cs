@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
 
 namespace SaaSify.MultiTenant.Application.Features.Employees.Commands.UpdateEmployee;
 
@@ -25,7 +26,7 @@ public sealed class UpdateEmployeeCommandHandler
 
         if (employee is null)
         {
-            throw new KeyNotFoundException(
+            throw new NotFoundException(
                 "Employee not found.");
         }
 

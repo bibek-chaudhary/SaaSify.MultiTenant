@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
-using SaaSify.MultiTenant.Infrastructure.Identity;
+using SaaSify.MultiTenant.Infrastructure.Configurations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

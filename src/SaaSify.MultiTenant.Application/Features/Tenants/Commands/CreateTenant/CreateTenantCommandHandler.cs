@@ -2,6 +2,7 @@
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Database;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Application.Features.Tenants.DTOs;
 using SaaSify.MultiTenant.Core.Entities;
 
@@ -36,7 +37,7 @@ public class CreateTenantCommandHandler
             .ExistsByEmailAsync(request.EmailAddress, cancellationToken);
 
         if (emailExists)
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 $"A tenant with email '{request.EmailAddress}' already exists.");
 
         var tenantIdentifier = GenerateTenantIdentifier();

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,12 +11,10 @@ using SaaSify.MultiTenant.Application.Common.Interfaces;
 using SaaSify.MultiTenant.Infrastructure.Authentication;
 using SaaSify.MultiTenant.Infrastructure.Configurations;
 using SaaSify.MultiTenant.Infrastructure.Database;
-using SaaSify.MultiTenant.Infrastructure.Identity;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using SaaSify.MultiTenant.Infrastructure.MultiTenancy;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Repositories;
-using SaaSify.MultiTenant.Shared.Responses;
 using System.Text;
 
 namespace SaaSify.MultiTenant.Infrastructure;
@@ -74,11 +71,11 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<MasterDbContext>()
             .AddDefaultTokenProviders();
 
-        services.Configure<JwtSettings>( configuration.GetSection("Jwt"));
+        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
         var jwtSettings =
-                    configuration.GetSection("Jwt")
-                        .Get<JwtSettings>();
+            configuration.GetSection("Jwt")
+                .Get<JwtSettings>();
 
         services.AddAuthentication(options =>
         {
@@ -109,35 +106,6 @@ public static class DependencyInjection
                         new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(jwtSettings.Key))
                 };
-
-            options.Events = new JwtBearerEvents
-            {
-                OnChallenge = async context =>
-                {
-                    context.HandleResponse();
-
-                    context.Response.StatusCode = 401;
-
-                    await context.Response.WriteAsJsonAsync(
-                        new ApiResponse<object>
-                        {
-                            Success = false,
-                            Message = "Authentication required."
-                        });
-                },
-
-                OnForbidden = async context =>
-                {
-                    context.Response.StatusCode = 403;
-
-                    await context.Response.WriteAsJsonAsync(
-                        new ApiResponse<object>
-                        {
-                            Success = false,
-                            Message = "Access denied."
-                        });
-                }
-            };
         });
 
         services.AddAuthorization(options =>

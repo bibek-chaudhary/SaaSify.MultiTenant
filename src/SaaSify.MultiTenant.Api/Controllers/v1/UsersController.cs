@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaaSify.MultiTenant.Application.Features.Users.Commands.RegisterUser;
 using SaaSify.MultiTenant.Core.Constants;
-using SaaSify.MultiTenant.Shared.Responses;
+using SaaSify.MultiTenant.Api.Responses;
 
 namespace SaaSify.MultiTenant.Api.Controllers.v1;
 

@@ -3,12 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaaSify.MultiTenant.Application.Features.Tenants.Commands.CreateTenant;
-using SaaSify.MultiTenant.Application.Features.Tenants.Commands.DeleteCommand;
+using SaaSify.MultiTenant.Application.Features.Tenants.Commands.DeleteTenant;
 using SaaSify.MultiTenant.Application.Features.Tenants.Commands.UpdateTenant;
 using SaaSify.MultiTenant.Application.Features.Tenants.DTOs;
 using SaaSify.MultiTenant.Application.Features.Tenants.Queries.GetAllTenants;
 using SaaSify.MultiTenant.Application.Features.Tenants.Queries.GetTenantById;
-using SaaSify.MultiTenant.Shared.Responses;
+using SaaSify.MultiTenant.Api.Responses;
 
 namespace SaaSify.MultiTenant.Api.Controllers.v1;
 
