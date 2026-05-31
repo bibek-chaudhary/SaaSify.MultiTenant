@@ -1,6 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="DTOs\**" />
+    <EmbeddedResource Remove="DTOs\**" />
+    <None Remove="DTOs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SaaSify.MultiTenant.Core\SaaSify.MultiTenant.Core.csproj" />
     <ProjectReference Include="..\SaaSify.MultiTenant.Shared\SaaSify.MultiTenant.Shared.csproj" />
   </ItemGroup>
@@ -11,11 +17,6 @@
     <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.27" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="DTOs\" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -23,4 +23,8 @@ public interface ITenantRepository
     Task DeleteAsync(
         Tenant tenant,
         CancellationToken cancellationToken);
+
+    Task<bool> ExistsByEmailAsync(
+        string emailAddress,
+        CancellationToken cancellationToken);
 }

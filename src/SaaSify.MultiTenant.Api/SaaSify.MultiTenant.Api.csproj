@@ -27,9 +27,4 @@
     <ProjectReference Include="..\SaaSify.MultiTenant.Shared\SaaSify.MultiTenant.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Common\" />
-  </ItemGroup>
-
 </Project>

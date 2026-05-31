@@ -69,4 +69,14 @@ public class TenantRepository : ITenantRepository
         await _context.SaveChangesAsync(
             cancellationToken);
     }
+
+    public async Task<bool> ExistsByEmailAsync(
+        string emailAddress,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Tenants
+            .AnyAsync(
+                x => x.EmailAddress == emailAddress,
+                cancellationToken);
+    }
 }

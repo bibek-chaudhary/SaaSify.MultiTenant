@@ -32,6 +32,13 @@ public class CreateTenantCommandHandler
         CreateTenantCommand request,
         CancellationToken cancellationToken)
     {
+        var emailExists = await _tenantRepository
+            .ExistsByEmailAsync(request.EmailAddress, cancellationToken);
+
+        if (emailExists)
+            throw new InvalidOperationException(
+                $"A tenant with email '{request.EmailAddress}' already exists.");
+
         var tenantIdentifier = GenerateTenantIdentifier();
 
         var connectionString =
