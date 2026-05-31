@@ -26,7 +26,7 @@ public sealed class DeleteEmployeeCommandHandler
 
         if (employee is null)
         {
-            throw new ApplicationException(
+            throw new KeyNotFoundException(
                 "Employee not found.");
         }
 

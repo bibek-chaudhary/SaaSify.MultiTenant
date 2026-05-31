@@ -158,12 +158,6 @@ public static class DependencyInjection
             });
         });
 
-        services.AddDbContext<TenantDbContext>(options =>
-        {
-            options.UseNpgsql(
-                configuration.GetConnectionString("TenantConnection"));
-        });
-
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<ITenantDatabaseService, TenantDatabaseService>();

@@ -2,5 +2,9 @@
 
 public interface IJwtTokenGenerator
 {
-    Task<string> GenerateTokenAsync(Guid userId, string email, string role, Guid? tenantId);
+    Task<(string Token, DateTime ExpiresAtUtc)> GenerateTokenAsync(
+        Guid userId,
+        string email,
+        string role,
+        Guid? tenantId);
 }

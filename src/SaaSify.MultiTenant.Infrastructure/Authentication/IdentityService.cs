@@ -15,7 +15,7 @@ public class IdentityService : IIdentityService
         _userManager = userManager;
     }
 
-    public async Task<(bool Success, Guid UserId, string Email, string Role, Guid TenantId)>
+    public async Task<(bool Success, Guid UserId, string Email, string Role, Guid? TenantId)>
         ValidateUserAsync(string email, string password)
     {
         var user =
@@ -46,7 +46,7 @@ public class IdentityService : IIdentityService
             user.Id,
             user.Email!,
             role,
-            user.TenantId ?? Guid.Empty
+            user.TenantId
         );
     }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SaaSify.MultiTenant.Application.Abstractions.Authentication;
+﻿namespace SaaSify.MultiTenant.Application.Abstractions.Authentication;
 public interface ICurrentUserService
 {
     Guid UserId { get; }

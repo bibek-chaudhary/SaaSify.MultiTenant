@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using SaaSify.MultiTenant.Api.Extensions;
 using SaaSify.MultiTenant.Api.Middlewares;
 using SaaSify.MultiTenant.Application;
@@ -8,7 +6,6 @@ using SaaSify.MultiTenant.Infrastructure;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Seed;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

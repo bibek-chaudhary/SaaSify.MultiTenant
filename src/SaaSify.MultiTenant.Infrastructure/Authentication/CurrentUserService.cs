@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SaaSify.MultiTenant.Infrastructure.Authentication;
 
-public class  CurrentUserService : ICurrentUserService
+public class CurrentUserService : ICurrentUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 

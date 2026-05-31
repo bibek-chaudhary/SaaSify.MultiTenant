@@ -20,7 +20,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = jwtOptions.Value;
     }
 
-    public Task<string> GenerateTokenAsync(
+    public Task<(string Token, DateTime ExpiresAtUtc)> GenerateTokenAsync(
         Guid userId,
         string email,
         string role,
@@ -50,7 +50,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             key,
             SecurityAlgorithms.HmacSha256);
 
-        var expires =
+        var expiresAtUtc =
             DateTime.UtcNow.AddMinutes(
                 _jwtSettings.ExpiryMinutes);
 
@@ -58,13 +58,13 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
             claims: claims,
-            expires: expires,
+            expires: expiresAtUtc,
             signingCredentials: credentials);
 
         var jwt =
             new JwtSecurityTokenHandler()
                 .WriteToken(token);
 
-        return Task.FromResult(jwt);
+        return Task.FromResult((jwt, expiresAtUtc));
     }
 }

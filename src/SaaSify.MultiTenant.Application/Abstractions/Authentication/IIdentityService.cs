@@ -4,7 +4,7 @@ namespace SaaSify.MultiTenant.Application.Abstractions.Authentication;
 
 public interface IIdentityService
 {
-    Task<(bool Success, Guid UserId, string Email, string Role, Guid TenantId)>
+    Task<(bool Success, Guid UserId, string Email, string Role, Guid? TenantId)>
         ValidateUserAsync(string email, string password);
 
     Task CreateTenantAdminAsync(

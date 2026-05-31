@@ -32,48 +32,44 @@ public class CreateTenantCommandHandler
         CreateTenantCommand request,
         CancellationToken cancellationToken)
     {
-        var tenantIdentifier =
-            GenerateTenantIdentifier();
+        var tenantIdentifier = GenerateTenantIdentifier();
 
         var connectionString =
             await _tenantDatabaseService
-                .CreateTenantDatabaseAsync(
-                    tenantIdentifier);
+                .CreateTenantDatabaseAsync(tenantIdentifier);
 
-        var tenant = new Tenant
+        try
         {
-            Id = Guid.NewGuid(),
+            var tenant = new Tenant
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                EmailAddress = request.EmailAddress,
+                TenantId = tenantIdentifier,
+                DbConnStr = connectionString,
+                CreatedAtUtc = DateTime.UtcNow
+            };
 
-            Name = request.Name,
+            await _tenantRepository.AddAsync(tenant, cancellationToken);
 
-            EmailAddress = request.EmailAddress,
+            await _identityService.CreateTenantAdminAsync(
+                request.EmailAddress,
+                tenant.Id,
+                request.AdminPassword);
 
-            TenantId = tenantIdentifier,
-
-            DbConnStr = connectionString,
-
-            CreatedAtUtc = DateTime.UtcNow
-        };
-
-        await _tenantRepository.AddAsync(
-            tenant,
-            cancellationToken);
-
-        await _identityService.CreateTenantAdminAsync(
-            request.EmailAddress,
-            tenant.Id,
-            "Admin@123");
-
-        return new TenantResponseDto
+            return new TenantResponseDto
+            {
+                Id = tenant.Id,
+                Name = tenant.Name,
+                EmailAddress = tenant.EmailAddress,
+                TenantId = tenant.TenantId
+            };
+        }
+        catch
         {
-            Id = tenant.Id,
-
-            Name = tenant.Name,
-
-            EmailAddress = tenant.EmailAddress,
-
-            TenantId = tenant.TenantId
-        };
+            await _tenantDatabaseService.DeleteTenantDatabaseAsync(tenantIdentifier);
+            throw;
+        }
     }
 
     private static string GenerateTenantIdentifier()

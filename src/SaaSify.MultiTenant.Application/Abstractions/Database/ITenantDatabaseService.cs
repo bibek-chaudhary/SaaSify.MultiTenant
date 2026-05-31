@@ -3,4 +3,6 @@
 public interface ITenantDatabaseService
 {
     Task<string> CreateTenantDatabaseAsync(string tenantIdentifier);
+
+    Task DeleteTenantDatabaseAsync(string tenantIdentifier);
 }

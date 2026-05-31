@@ -29,7 +29,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
                 "Invalid credentials.");
         }
 
-        var token = await _jwtTokenGenerator.GenerateTokenAsync(
+        var (token, expiresAtUtc) = await _jwtTokenGenerator.GenerateTokenAsync(
                 result.UserId,
                 result.Email,
                 result.Role,
@@ -38,7 +38,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
         return new AuthResponseDto
         {
             Token = token,
-            ExpiresAtUtc = DateTime.UtcNow.AddMinutes(60)
+            ExpiresAtUtc = expiresAtUtc
         };
     }
 }
