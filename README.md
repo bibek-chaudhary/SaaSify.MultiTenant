@@ -408,7 +408,8 @@ Request Body:
 ```json
 {
   "fullName": "John Doe",
-  "emailAddress": "john@company.com"
+  "emailAddress": "john@company.com",
+  "password": "Password@123"
 }
 ```
 
