@@ -91,10 +91,10 @@ MasterDb
 Each tenant has a dedicated PostgreSQL database.
 
 ```text
-tenant_1234
+tenant_k3x9q2m7ab
 └── Employees
 
-tenant_5678
+tenant_p8d1w5z0rt
 └── Employees
 ```
 
@@ -219,13 +219,15 @@ A tenant record is created in the Master Database.
 
 ### Step 2
 
-A unique Tenant Identifier is generated.
+A unique Tenant Identifier is generated: 10 random lowercase letters and digits.
 
 Example:
 
 ```text
-4832
+k3x9q2m7ab
 ```
+
+Tenants created before this format was introduced keep their original 4-digit identifiers.
 
 ### Step 3
 
@@ -234,7 +236,7 @@ A dedicated PostgreSQL database is created.
 Example:
 
 ```text
-tenant_4832
+tenant_k3x9q2m7ab
 ```
 
 ### Step 4

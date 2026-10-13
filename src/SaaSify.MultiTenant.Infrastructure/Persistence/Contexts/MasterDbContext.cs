@@ -25,7 +25,7 @@ namespace SaaSify.MultiTenant.Infrastructure.Persistence.Contexts
                     entity.HasKey(t => t.Id);
                     entity.Property(t => t.Name).IsRequired().HasMaxLength(100);
                     entity.Property(t => t.EmailAddress).IsRequired().HasMaxLength(255);
-                    entity.Property(t => t.TenantId).IsRequired().HasMaxLength(4);
+                    entity.Property(t => t.TenantId).IsRequired().HasMaxLength(32);
                     entity.Property(t => t.DbConnStr).IsRequired();
                     entity.HasIndex(t => t.TenantId).IsUnique();
                 });

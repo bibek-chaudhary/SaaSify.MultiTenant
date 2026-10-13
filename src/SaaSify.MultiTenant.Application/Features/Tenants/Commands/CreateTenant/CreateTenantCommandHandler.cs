@@ -5,6 +5,7 @@ using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Application.Features.Tenants.DTOs;
 using SaaSify.MultiTenant.Core.Entities;
+using System.Security.Cryptography;
 
 namespace SaaSify.MultiTenant.Application.Features.Tenants.Commands.CreateTenant;
 
@@ -106,13 +107,20 @@ public class CreateTenantCommandHandler
 
     private const int MaxIdentifierAttempts = 10;
 
+    // Lowercase only: the identifier becomes part of the Postgres database name.
+    private const string IdentifierAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+    private const int IdentifierLength = 10;
+
     private async Task<string> GenerateTenantIdentifierAsync(
         CancellationToken cancellationToken)
     {
         for (var attempt = 0; attempt < MaxIdentifierAttempts; attempt++)
         {
             var identifier =
-                Random.Shared.Next(1000, 10000).ToString();
+                RandomNumberGenerator.GetString(
+                    IdentifierAlphabet,
+                    IdentifierLength);
 
             var taken =
                 await _tenantRepository.ExistsByIdentifierAsync(
