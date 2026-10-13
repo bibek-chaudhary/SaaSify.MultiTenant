@@ -3,6 +3,7 @@ using SaaSify.MultiTenant.Api.Extensions;
 using SaaSify.MultiTenant.Api.Middlewares;
 using SaaSify.MultiTenant.Application;
 using SaaSify.MultiTenant.Infrastructure;
+using SaaSify.MultiTenant.Infrastructure.Configurations;
 using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 using SaaSify.MultiTenant.Infrastructure.Persistence.Seed;
@@ -30,10 +31,15 @@ using (var scope = app.Services.CreateScope())
     var userManager =
         services.GetRequiredService<UserManager<IdentityApplicationUser>>();
 
+    var superAdmin =
+        builder.Configuration.GetSection("SuperAdmin")
+            .Get<SuperAdminSettings>() ?? new SuperAdminSettings();
+
     await ApplicationDbSeeder.SeedAsync(
         context,
         roleManager,
-        userManager);
+        userManager,
+        superAdmin);
 
     await TenantDatabaseMigrator.MigrateAllAsync(
         context,

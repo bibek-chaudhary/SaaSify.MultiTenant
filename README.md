@@ -141,7 +141,7 @@ cd SaaSify.MultiTenant
 
 ## Configure Secrets
 
-Secrets are not stored in `appsettings.json`. The app refuses to start until both of these are set.
+Secrets are not stored in `appsettings.json`. The app refuses to start until these are set.
 
 For local development, use .NET user-secrets:
 
@@ -151,6 +151,8 @@ cd src/SaaSify.MultiTenant.Api
 dotnet user-secrets set "DatabaseSettings:MasterConnection" "Host=localhost;Port=5432;Database=SaaSifyMasterDb;Username=postgres;Password=<your-password>"
 
 dotnet user-secrets set "Jwt:Key" "<random string, at least 32 characters>"
+
+dotnet user-secrets set "SuperAdmin:Password" "<strong password>"
 ```
 
 In other environments, use environment variables instead:
@@ -158,7 +160,10 @@ In other environments, use environment variables instead:
 ```text
 DatabaseSettings__MasterConnection
 Jwt__Key
+SuperAdmin__Password
 ```
+
+`SuperAdmin:Password` is only required on the first run, when the SuperAdmin account is created. It must be at least 8 characters and include an uppercase letter, a lowercase letter, a digit and a symbol.
 
 `dotnet ef` commands read the same user-secrets and environment variables.
 
@@ -193,14 +198,14 @@ https://localhost:{port}/swagger
 
 # Initial SuperAdmin Credentials
 
-The application seeds a default SuperAdmin user.
+On first run, the application seeds a SuperAdmin user from configuration.
 
-| Field    | Value                                                   |
-| -------- | ------------------------------------------------------- |
-| Email    | [assessment@yopmail.com](mailto:assessment@yopmail.com) |
-| Password | Tester@123                                              |
-| Role     | SuperAdmin                                              |
-| TenantId | null                                                    |
+| Field    | Value                                                                  |
+| -------- | ---------------------------------------------------------------------- |
+| Email    | `superadmin@saasify.local` (override with `SuperAdmin:Email`)          |
+| Password | The value you set for `SuperAdmin:Password` (see Configure Secrets)    |
+| Role     | SuperAdmin                                                             |
+| TenantId | null                                                                   |
 
 ---
 
@@ -288,8 +293,8 @@ Request Body:
 
 ```json
 {
-  "email": "assessment@yopmail.com",
-  "password": "Tester@123"
+  "email": "superadmin@saasify.local",
+  "password": "<your SuperAdmin:Password>"
 }
 ```
 
