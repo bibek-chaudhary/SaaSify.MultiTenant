@@ -1,0 +1,165 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
+using SaaSify.MultiTenant.Application.Abstractions.MultiTenancy;
+using SaaSify.MultiTenant.Application.Abstractions.Persistence;
+using SaaSify.MultiTenant.Application.Exceptions;
+using SaaSify.MultiTenant.Infrastructure.Authentication;
+using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
+using SaaSify.MultiTenant.Infrastructure.MultiTenancy;
+using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
+using SaaSify.MultiTenant.Infrastructure.Persistence.Repositories;
+using SaaSify.MultiTenant.Infrastructure.Settings;
+using System.Text;
+
+namespace SaaSify.MultiTenant.Infrastructure;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddHttpContextAccessor();
+
+        var masterConnection =
+            configuration["DatabaseSettings:MasterConnection"];
+
+        if (string.IsNullOrWhiteSpace(masterConnection))
+        {
+            throw new InvalidOperationException(
+                "DatabaseSettings:MasterConnection is not configured. " +
+                "Set it with `dotnet user-secrets` or the " +
+                "DatabaseSettings__MasterConnection environment variable.");
+        }
+
+        services.Configure<DatabaseSettings>(configuration.GetSection("DatabaseSettings"));
+
+        services.AddDbContext<MasterDbContext>(options =>
+        {
+            options.UseNpgsql(masterConnection);
+        });
+
+        services.AddDbContext<TenantDbContext>(
+            (serviceProvider, options) =>
+            {
+                var tenantProvider =
+                    serviceProvider
+                        .GetRequiredService<ITenantProvider>();
+
+                var tenant =
+                    tenantProvider.GetCurrentTenant();
+
+                if (tenant is null)
+                {
+                    throw new UnauthorizedException(
+                        "Tenant context not found.");
+                }
+
+                options.UseNpgsql(
+                    tenant.ConnectionString);
+            });
+
+        services
+            .AddIdentity<IdentityApplicationUser, IdentityRole<Guid>>(options =>
+            {
+                options.Password.RequiredLength = 8;
+
+                options.Password.RequireUppercase = true;
+
+                options.Password.RequireLowercase = true;
+
+                options.Password.RequireDigit = true;
+
+                options.Password.RequireNonAlphanumeric = true;
+
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<MasterDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+
+        var jwtSettings =
+            configuration.GetSection("Jwt")
+                .Get<JwtSettings>();
+
+        // HMAC-SHA256 needs a key of at least 256 bits.
+        if (jwtSettings is null
+            || string.IsNullOrWhiteSpace(jwtSettings.Key)
+            || Encoding.UTF8.GetByteCount(jwtSettings.Key) < 32)
+        {
+            throw new InvalidOperationException(
+                "Jwt:Key is missing or shorter than 32 bytes. " +
+                "Set it with `dotnet user-secrets` or the Jwt__Key environment variable.");
+        }
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+
+            options.DefaultChallengeScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters =
+                new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+
+                    ValidateAudience = true,
+
+                    ValidateLifetime = true,
+
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = jwtSettings!.Issuer,
+
+                    ValidAudience = jwtSettings.Audience,
+
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(jwtSettings.Key))
+                };
+        });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("SuperAdminOnly", policy =>
+            {
+                policy.RequireRole("SuperAdmin");
+            });
+
+            options.AddPolicy("AdminOnly", policy =>
+            {
+                policy.RequireRole("Admin");
+            });
+
+            options.AddPolicy("EmployeeOnly", policy =>
+            {
+                policy.RequireRole("Employee");
+            });
+        });
+
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<ITenantDatabaseService, TenantDatabaseService>();
+
+        services.AddScoped<ITenantRepository, TenantRepository>();
+
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        services.AddMemoryCache();
+        services.AddScoped<ITenantProvider, TenantProvider>();
+        services.AddScoped<ITenantResolver, CachedTenantResolver>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+        return services;
+    }
+}

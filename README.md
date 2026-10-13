@@ -11,40 +11,50 @@ The solution follows Clean Architecture principles to ensure maintainability, sc
 ## Project Structure
 
 ```text
-src
+SaaSify.MultiTenant.sln
 │
-├── SaaSify.MultiTenant.Api
-│   ├── Controllers
-│   ├── Middleware
+├── SaaSify.MultiTenant.Core                 # Domain: no dependencies
+│   ├── Common                               # BaseEntity
+│   ├── Constants                            # Roles
+│   └── Entities                             # Tenant, Employee
+│
+├── SaaSify.MultiTenant.Application          # Use cases (CQRS)
+│   ├── Abstractions                         # Interfaces implemented by Infrastructure
+│   │   ├── Authentication
+│   │   ├── MultiTenancy
+│   │   └── Persistence
+│   ├── Behaviors                            # MediatR pipeline (validation)
+│   ├── Exceptions
+│   └── Features                             # One folder per command/query
+│       ├── Auth
+│       ├── Employees
+│       └── Tenants
+│
+├── SaaSify.MultiTenant.Infrastructure       # Implementations
+│   ├── Authentication                       # Identity, JWT, current user
+│   ├── Identity                             # Identity user entity
+│   ├── MultiTenancy                         # Tenant resolution and database provisioning
+│   ├── Persistence
+│   │   ├── Configurations                   # EF Core entity configurations
+│   │   ├── Contexts                         # MasterDbContext, TenantDbContext
+│   │   ├── Factories                        # Design-time factories for `dotnet ef`
+│   │   ├── Initialization                   # Startup migration and seeding
+│   │   ├── Migrations                       # Master database migrations
+│   │   ├── Repositories
+│   │   └── TenantMigrations                 # Tenant database migrations
+│   └── Settings                             # Strongly typed configuration
+│
+├── SaaSify.MultiTenant.Api                  # HTTP entry point
+│   ├── Controllers/v1
 │   ├── Extensions
+│   ├── Middlewares
 │   ├── Responses
 │   └── Program.cs
 │
-├── SaaSify.MultiTenant.Application
-│   ├── Abstractions
-│   ├── Behaviors
-│   ├── Common
-│   ├── Exceptions
-│   ├── Features
-│   │   ├── Auth
-│   │   ├── Employees
-│   │   └── Tenants
-│   └── Validators
-│
-├── SaaSify.MultiTenant.Core
-│   ├── Entities
-│   ├── Constants
-│   └── Common
-│
-└── SaaSify.MultiTenant.Infrastructure
-    ├── Authentication
-    ├── Configurations
-    ├── Database
-    ├── Identity
-    ├── MultiTenancy
-    ├── Persistence
-    └── Repositories
+└── SaaSify.MultiTenant.UnitTests            # Mirrors Application/Features
 ```
+
+Each folder under `Application/Abstractions` has a matching folder in Infrastructure that implements it.
 
 ---
 
@@ -146,7 +156,7 @@ Secrets are not stored in `appsettings.json`. The app refuses to start until the
 For local development, use .NET user-secrets:
 
 ```bash
-cd src/SaaSify.MultiTenant.Api
+cd SaaSify.MultiTenant.Api
 
 dotnet user-secrets set "DatabaseSettings:MasterConnection" "Host=localhost;Port=5432;Database=SaaSifyMasterDb;Username=postgres;Password=<your-password>"
 
@@ -172,7 +182,7 @@ SuperAdmin__Password
 ## Run the Application
 
 ```bash
-dotnet run --project src/SaaSify.MultiTenant.Api
+dotnet run --project SaaSify.MultiTenant.Api
 ```
 
 The application automatically:
