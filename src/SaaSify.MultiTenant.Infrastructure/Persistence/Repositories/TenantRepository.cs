@@ -79,4 +79,14 @@ public class TenantRepository : ITenantRepository
                 x => x.EmailAddress == emailAddress,
                 cancellationToken);
     }
+
+    public async Task<bool> ExistsByIdentifierAsync(
+        string tenantIdentifier,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Tenants
+            .AnyAsync(
+                x => x.TenantId == tenantIdentifier,
+                cancellationToken);
+    }
 }

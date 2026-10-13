@@ -51,9 +51,17 @@ public class TenantDatabaseService : ITenantDatabaseService
             .UseNpgsql(tenantConnectionString)
             .Options;
 
-        await using var context = new TenantDbContext(options);
+        try
+        {
+            await using var context = new TenantDbContext(options);
 
-        await context.Database.MigrateAsync();
+            await context.Database.MigrateAsync();
+        }
+        catch
+        {
+            await DeleteTenantDatabaseAsync(tenantIdentifier);
+            throw;
+        }
 
         return tenantConnectionString;
     }

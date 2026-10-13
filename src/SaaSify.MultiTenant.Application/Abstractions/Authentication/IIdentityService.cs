@@ -7,7 +7,7 @@ public interface IIdentityService
     Task<(bool Success, Guid UserId, string Email, string Role, Guid? TenantId)>
         ValidateUserAsync(string email, string password);
 
-    Task CreateTenantAdminAsync(
+    Task<Guid> CreateTenantAdminAsync(
         string email,
         Guid tenantId,
         string password);
@@ -23,4 +23,6 @@ public interface IIdentityService
     Task UpdateEmailAsync(Guid userId, string newEmail);
 
     Task DeleteUserAsync(Guid userId);
+
+    Task DeleteUsersByTenantAsync(Guid tenantId);
 }

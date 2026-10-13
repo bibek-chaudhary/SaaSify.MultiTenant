@@ -27,4 +27,8 @@ public interface ITenantRepository
     Task<bool> ExistsByEmailAsync(
         string emailAddress,
         CancellationToken cancellationToken);
+
+    Task<bool> ExistsByIdentifierAsync(
+        string tenantIdentifier,
+        CancellationToken cancellationToken);
 }

@@ -1,3 +1,4 @@
+using SaaSify.MultiTenant.Api.Responses;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Common;
 using SaaSify.MultiTenant.Application.Common.Interfaces;
@@ -29,16 +30,29 @@ public class TenantMiddleware
                     .FindAsync(
                         currentUserService.TenantId.Value);
 
-            if (tenant is not null)
+            if (tenant is null)
             {
-                tenantProvider.SetTenant(
-                    new TenantInfo
+                // Token is still valid but its tenant has been deleted.
+                context.Response.StatusCode =
+                    StatusCodes.Status401Unauthorized;
+
+                await context.Response.WriteAsJsonAsync(
+                    new ApiResponse<object>
                     {
-                        TenantId = tenant.Id,
-                        Identifier = tenant.TenantId,
-                        ConnectionString = tenant.DbConnStr
+                        Success = false,
+                        Message = "Tenant not found."
                     });
+
+                return;
             }
+
+            tenantProvider.SetTenant(
+                new TenantInfo
+                {
+                    TenantId = tenant.Id,
+                    Identifier = tenant.TenantId,
+                    ConnectionString = tenant.DbConnStr
+                });
         }
 
         await _next(context);

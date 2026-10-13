@@ -8,6 +8,7 @@ using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Database;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Common.Interfaces;
+using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Infrastructure.Authentication;
 using SaaSify.MultiTenant.Infrastructure.Configurations;
 using SaaSify.MultiTenant.Infrastructure.Database;
@@ -46,7 +47,8 @@ public static class DependencyInjection
 
                 if (tenant is null)
                 {
-                    return;
+                    throw new UnauthorizedException(
+                        "Tenant context not found.");
                 }
 
                 options.UseNpgsql(

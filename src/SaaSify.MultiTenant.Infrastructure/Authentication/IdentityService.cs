@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Exceptions;
 using SaaSify.MultiTenant.Core.Constants;
@@ -51,32 +52,16 @@ public class IdentityService : IIdentityService
         );
     }
 
-    public async Task CreateTenantAdminAsync(
+    public Task<Guid> CreateTenantAdminAsync(
         string email,
         Guid tenantId,
         string password)
     {
-        var adminUser =
-            new IdentityApplicationUser
-            {
-                Id = Guid.NewGuid(),
-
-                Email = email,
-
-                UserName = email,
-
-                TenantId = tenantId,
-
-                EmailConfirmed = true
-            };
-
-        await _userManager.CreateAsync(
-            adminUser,
-            password);
-
-        await _userManager.AddToRoleAsync(
-            adminUser,
-            Roles.Admin);
+        return RegisterUserAsync(
+            email,
+            password,
+            Roles.Admin,
+            tenantId);
     }
 
     public async Task<Guid> RegisterUserAsync(
@@ -116,9 +101,20 @@ public class IdentityService : IIdentityService
                     result.Errors.Select(x => x.Description)));
         }
 
-        await _userManager.AddToRoleAsync(
-            user,
-            role);
+        var roleResult =
+            await _userManager.AddToRoleAsync(
+                user,
+                role);
+
+        if (!roleResult.Succeeded)
+        {
+            await _userManager.DeleteAsync(user);
+
+            throw new InvalidOperationException(
+                $"Failed to assign role '{role}': " +
+                string.Join(", ",
+                    roleResult.Errors.Select(x => x.Description)));
+        }
 
         return user.Id;
     }
@@ -182,5 +178,27 @@ public class IdentityService : IIdentityService
         }
 
         await _userManager.DeleteAsync(user);
+    }
+
+    public async Task DeleteUsersByTenantAsync(Guid tenantId)
+    {
+        var users =
+            await _userManager.Users
+                .Where(x => x.TenantId == tenantId)
+                .ToListAsync();
+
+        foreach (var user in users)
+        {
+            var result =
+                await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    $"Failed to delete user '{user.Id}': " +
+                    string.Join(", ",
+                        result.Errors.Select(x => x.Description)));
+            }
+        }
     }
 }

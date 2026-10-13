@@ -1,4 +1,5 @@
 using MediatR;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Database;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Exceptions;
@@ -10,13 +11,16 @@ public class DeleteTenantCommandHandler
 {
     private readonly ITenantRepository _tenantRepository;
     private readonly ITenantDatabaseService _tenantDatabaseService;
+    private readonly IIdentityService _identityService;
 
     public DeleteTenantCommandHandler(
         ITenantRepository tenantRepository,
-        ITenantDatabaseService tenantDatabaseService)
+        ITenantDatabaseService tenantDatabaseService,
+        IIdentityService identityService)
     {
         _tenantRepository = tenantRepository;
         _tenantDatabaseService = tenantDatabaseService;
+        _identityService = identityService;
     }
 
     public async Task<bool> Handle(
@@ -33,6 +37,9 @@ public class DeleteTenantCommandHandler
             throw new NotFoundException(
                 "Tenant not found.");
         }
+
+        // Revoke logins first so no one can reach a half-deleted tenant.
+        await _identityService.DeleteUsersByTenantAsync(tenant.Id);
 
         await _tenantRepository.DeleteAsync(
             tenant,
