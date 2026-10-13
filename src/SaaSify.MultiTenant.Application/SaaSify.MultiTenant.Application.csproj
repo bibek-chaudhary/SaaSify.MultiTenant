@@ -13,8 +13,8 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-    <PackageReference Include="MediatR" Version="14.1.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <!-- Pinned to 12.x: MediatR 13+ requires a commercial license. 12.x includes AddMediatR. -->
+    <PackageReference Include="MediatR" Version="[12.5.0,13.0.0)" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.27" />
   </ItemGroup>
 
