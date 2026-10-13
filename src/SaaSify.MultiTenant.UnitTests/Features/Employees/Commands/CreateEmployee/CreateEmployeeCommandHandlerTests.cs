@@ -29,12 +29,16 @@ public class CreateEmployeeCommandHandlerTests
     public async Task Should_Create_Employee_When_Request_Is_Valid()
     {
         var tenantId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
         var command = new CreateEmployeeCommand("Jane Doe", "jane.doe@example.com", "P@ssword1");
 
         _currentUserService.Setup(x => x.TenantId).Returns(tenantId);
         _employeeRepository
             .Setup(x => x.EmailExistsAsync(command.EmailAddress, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
+        _identityService
+            .Setup(x => x.RegisterUserAsync(command.EmailAddress, command.Password, Roles.Employee, tenantId))
+            .ReturnsAsync(userId);
 
         var result = await _handler.Handle(command, CancellationToken.None);
 
@@ -45,8 +49,31 @@ public class CreateEmployeeCommandHandlerTests
             x => x.RegisterUserAsync(command.EmailAddress, command.Password, Roles.Employee, tenantId),
             Times.Once);
         _employeeRepository.Verify(
-            x => x.AddAsync(It.Is<Employee>(e => e.EmailAddress == command.EmailAddress), It.IsAny<CancellationToken>()),
+            x => x.AddAsync(
+                It.Is<Employee>(e => e.EmailAddress == command.EmailAddress && e.UserId == userId),
+                It.IsAny<CancellationToken>()),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task Should_Delete_Identity_User_When_Saving_Employee_Fails()
+    {
+        var tenantId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        var command = new CreateEmployeeCommand("Jane Doe", "jane.doe@example.com", "P@ssword1");
+
+        _currentUserService.Setup(x => x.TenantId).Returns(tenantId);
+        _identityService
+            .Setup(x => x.RegisterUserAsync(command.EmailAddress, command.Password, Roles.Employee, tenantId))
+            .ReturnsAsync(userId);
+        _employeeRepository
+            .Setup(x => x.AddAsync(It.IsAny<Employee>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("db down"));
+
+        var act = () => _handler.Handle(command, CancellationToken.None);
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        _identityService.Verify(x => x.DeleteUserAsync(userId), Times.Once);
     }
 
     [Fact]

@@ -49,23 +49,34 @@ public sealed class CreateEmployeeCommandHandler
                 "Employee with this email already exists.");
         }
 
-        await _identityService.RegisterUserAsync(
-            request.EmailAddress,
-            request.Password,
-            Roles.Employee,
-            _currentUserService.TenantId.Value);
+        var userId =
+            await _identityService.RegisterUserAsync(
+                request.EmailAddress,
+                request.Password,
+                Roles.Employee,
+                _currentUserService.TenantId.Value);
 
         var employee = new Employee
         {
             Id = Guid.NewGuid(),
+            UserId = userId,
             FullName = request.FullName,
             EmailAddress = request.EmailAddress,
             CreatedAtUtc = DateTime.UtcNow
         };
 
-        await _employeeRepository.AddAsync(
-            employee,
-            cancellationToken);
+        try
+        {
+            await _employeeRepository.AddAsync(
+                employee,
+                cancellationToken);
+        }
+        catch
+        {
+            // Identity lives in the master DB, so roll it back by hand.
+            await _identityService.DeleteUserAsync(userId);
+            throw;
+        }
 
         return new EmployeeResponseDto
         {

@@ -36,11 +36,13 @@ public sealed class DeleteEmployeeCommandHandler
                 "Employee not found.");
         }
 
+        // Remove the login first: a leftover employee row is harmless,
+        // a leftover login for a deleted employee is not.
+        await _identityService.DeleteUserAsync(employee.UserId);
+
         await _employeeRepository.DeleteAsync(
             employee,
             cancellationToken);
-
-        await _identityService.DeleteUserAsync(employee.EmailAddress);
 
         return true;
     }

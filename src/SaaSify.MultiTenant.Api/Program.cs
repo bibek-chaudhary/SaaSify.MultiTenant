@@ -34,6 +34,11 @@ using (var scope = app.Services.CreateScope())
         context,
         roleManager,
         userManager);
+
+    await TenantDatabaseMigrator.MigrateAllAsync(
+        context,
+        userManager,
+        services.GetRequiredService<ILogger<Program>>());
 }
 
 if (app.Environment.IsDevelopment())

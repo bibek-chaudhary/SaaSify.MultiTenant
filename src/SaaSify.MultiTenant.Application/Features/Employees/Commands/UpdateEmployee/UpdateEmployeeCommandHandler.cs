@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Exceptions;
 
@@ -9,10 +10,14 @@ public sealed class UpdateEmployeeCommandHandler
 {
     private readonly IEmployeeRepository _employeeRepository;
 
+    private readonly IIdentityService _identityService;
+
     public UpdateEmployeeCommandHandler(
-        IEmployeeRepository employeeRepository)
+        IEmployeeRepository employeeRepository,
+        IIdentityService identityService)
     {
         _employeeRepository = employeeRepository;
+        _identityService = identityService;
     }
 
     public async Task<bool> Handle(
@@ -30,21 +35,45 @@ public sealed class UpdateEmployeeCommandHandler
                 "Employee not found.");
         }
 
+        var previousEmail = employee.EmailAddress;
+
+        var emailChanged =
+            !string.IsNullOrWhiteSpace(request.EmailAddress) &&
+            !string.Equals(
+                request.EmailAddress,
+                previousEmail,
+                StringComparison.OrdinalIgnoreCase);
+
+        if (emailChanged)
+        {
+            // Identity enforces global email uniqueness, so it goes first.
+            await _identityService.UpdateEmailAsync(
+                employee.UserId,
+                request.EmailAddress!);
+
+            employee.EmailAddress = request.EmailAddress!;
+        }
+
         if (!string.IsNullOrWhiteSpace(request.FullName))
         {
             employee.FullName = request.FullName;
         }
 
-        if (!string.IsNullOrWhiteSpace(request.EmailAddress))
-        {
-            employee.EmailAddress = request.EmailAddress;
-        }
-
         employee.UpdatedAtUtc = DateTime.UtcNow;
 
-        await _employeeRepository.UpdateAsync(
-            employee,
-            cancellationToken);
+        try
+        {
+            await _employeeRepository.UpdateAsync(
+                employee,
+                cancellationToken);
+        }
+        catch when (emailChanged)
+        {
+            await _identityService.UpdateEmailAsync(
+                employee.UserId,
+                previousEmail);
+            throw;
+        }
 
         return true;
     }

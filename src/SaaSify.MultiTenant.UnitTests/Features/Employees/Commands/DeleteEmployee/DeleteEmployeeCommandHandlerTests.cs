@@ -29,6 +29,7 @@ public class DeleteEmployeeCommandHandlerTests
         var employee = new Employee
         {
             Id = Guid.NewGuid(),
+            UserId = Guid.NewGuid(),
             FullName = "Jane Doe",
             EmailAddress = "jane.doe@example.com"
         };
@@ -45,7 +46,7 @@ public class DeleteEmployeeCommandHandlerTests
             x => x.DeleteAsync(employee, It.IsAny<CancellationToken>()),
             Times.Once);
         _identityService.Verify(
-            x => x.DeleteUserAsync(employee.EmailAddress),
+            x => x.DeleteUserAsync(employee.UserId),
             Times.Once);
     }
 
@@ -65,7 +66,7 @@ public class DeleteEmployeeCommandHandlerTests
             x => x.DeleteAsync(It.IsAny<Employee>(), It.IsAny<CancellationToken>()),
             Times.Never);
         _identityService.Verify(
-            x => x.DeleteUserAsync(It.IsAny<string>()),
+            x => x.DeleteUserAsync(It.IsAny<Guid>()),
             Times.Never);
     }
 }

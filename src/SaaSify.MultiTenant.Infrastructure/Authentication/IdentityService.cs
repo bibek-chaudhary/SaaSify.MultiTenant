@@ -123,15 +123,62 @@ public class IdentityService : IIdentityService
         return user.Id;
     }
 
-    public async Task DeleteUserAsync(string email)
+    public async Task<Guid?> FindUserIdByEmailAsync(string email)
     {
         var user =
             await _userManager.FindByEmailAsync(email);
 
+        return user?.Id;
+    }
+
+    public async Task UpdateEmailAsync(Guid userId, string newEmail)
+    {
+        var user =
+            await _userManager.FindByIdAsync(userId.ToString());
+
         if (user is null)
         {
             throw new NotFoundException(
-                $"Identity user '{email}' not found.");     
+                $"Identity user '{userId}' not found.");
+        }
+
+        if (string.Equals(user.Email, newEmail, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var existingUser =
+            await _userManager.FindByEmailAsync(newEmail);
+
+        if (existingUser is not null)
+        {
+            throw new ConflictException(
+                "User already exists.");
+        }
+
+        user.Email = newEmail;
+        user.UserName = newEmail;
+
+        var result =
+            await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            throw new ConflictException(
+                string.Join(", ",
+                    result.Errors.Select(x => x.Description)));
+        }
+    }
+
+    public async Task DeleteUserAsync(Guid userId)
+    {
+        var user =
+            await _userManager.FindByIdAsync(userId.ToString());
+
+        if (user is null)
+        {
+            throw new NotFoundException(
+                $"Identity user '{userId}' not found.");
         }
 
         await _userManager.DeleteAsync(user);

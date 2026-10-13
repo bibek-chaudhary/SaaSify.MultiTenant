@@ -28,6 +28,8 @@ namespace SaaSify.MultiTenant.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(x => x.EmailAddress)
                 .IsUnique();
+
+            builder.HasIndex(x => x.UserId);
         }
     }
 }

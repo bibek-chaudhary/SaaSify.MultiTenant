@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using SaaSify.MultiTenant.Application.Abstractions.Authentication;
 using SaaSify.MultiTenant.Application.Abstractions.Persistence;
 using SaaSify.MultiTenant.Application.Exceptions;
 
@@ -9,11 +10,14 @@ public class UpdateTenantCommandHandler
 {
     private readonly ITenantRepository _tenantRepository;
 
+    private readonly IIdentityService _identityService;
 
     public UpdateTenantCommandHandler(
-        ITenantRepository tenantRepository)
+        ITenantRepository tenantRepository,
+        IIdentityService identityService)
     {
         _tenantRepository = tenantRepository;
+        _identityService = identityService;
     }
 
     public async Task<bool> Handle(
@@ -31,21 +35,52 @@ public class UpdateTenantCommandHandler
                 "Tenant not found.");
         }
 
+        var previousEmail = tenant.EmailAddress;
+
+        var emailChanged =
+            !string.IsNullOrWhiteSpace(request.EmailAddress) &&
+            !string.Equals(
+                request.EmailAddress,
+                previousEmail,
+                StringComparison.OrdinalIgnoreCase);
+
+        Guid adminUserId = default;
+
+        if (emailChanged)
+        {
+            // The tenant email is the tenant admin's login, so keep them in sync.
+            adminUserId =
+                await _identityService.FindUserIdByEmailAsync(previousEmail)
+                ?? throw new NotFoundException(
+                    "Tenant admin user not found.");
+
+            await _identityService.UpdateEmailAsync(
+                adminUserId,
+                request.EmailAddress!);
+
+            tenant.EmailAddress = request.EmailAddress!;
+        }
+
         if (!string.IsNullOrWhiteSpace(request.Name))
         {
             tenant.Name = request.Name;
         }
 
-        if (!string.IsNullOrWhiteSpace(request.EmailAddress))
-        {
-            tenant.EmailAddress = request.EmailAddress;
-        }
-
         tenant.UpdatedAtUtc = DateTime.UtcNow;
 
-        await _tenantRepository.UpdateAsync(
-            tenant,
-            cancellationToken);
+        try
+        {
+            await _tenantRepository.UpdateAsync(
+                tenant,
+                cancellationToken);
+        }
+        catch when (emailChanged)
+        {
+            await _identityService.UpdateEmailAsync(
+                adminUserId,
+                previousEmail);
+            throw;
+        }
 
         return true;
     }

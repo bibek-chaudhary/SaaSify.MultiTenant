@@ -44,10 +44,15 @@ namespace SaaSify.MultiTenant.Infrastructure.Persistence.TenantMigrations
                     b.Property<DateTime?>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmailAddress")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Employees", (string)null);
                 });

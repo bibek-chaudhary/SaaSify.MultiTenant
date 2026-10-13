@@ -26,8 +26,8 @@ public sealed class GetMyProfileQueryHandler
         CancellationToken cancellationToken)
     {
         var employee =
-            await _employeeRepository.GetByEmailAsync(
-                _currentUserService.Email,
+            await _employeeRepository.GetByUserIdAsync(
+                _currentUserService.UserId,
                 cancellationToken);
 
         if (employee is null)

@@ -1,4 +1,4 @@
-﻿using SaaSify.MultiTenant.Application.Features.Auth.DTOs;
+using SaaSify.MultiTenant.Application.Features.Auth.DTOs;
 
 namespace SaaSify.MultiTenant.Application.Abstractions.Authentication;
 
@@ -18,5 +18,9 @@ public interface IIdentityService
         string role,
         Guid tenantId);
 
-    Task DeleteUserAsync(string email);
+    Task<Guid?> FindUserIdByEmailAsync(string email);
+
+    Task UpdateEmailAsync(Guid userId, string newEmail);
+
+    Task DeleteUserAsync(Guid userId);
 }
