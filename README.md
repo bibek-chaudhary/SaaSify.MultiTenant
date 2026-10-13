@@ -139,32 +139,28 @@ cd SaaSify.MultiTenant
 
 ---
 
-## Configure Database Connection
+## Configure Secrets
 
-Update the PostgreSQL connection string in:
+Secrets are not stored in `appsettings.json`. The app refuses to start until both of these are set.
 
-```json
-appsettings.json
+For local development, use .NET user-secrets:
+
+```bash
+cd src/SaaSify.MultiTenant.Api
+
+dotnet user-secrets set "DatabaseSettings:MasterConnection" "Host=localhost;Port=5432;Database=SaaSifyMasterDb;Username=postgres;Password=<your-password>"
+
+dotnet user-secrets set "Jwt:Key" "<random string, at least 32 characters>"
 ```
 
-Example:
+In other environments, use environment variables instead:
 
-```json
-{
-  "DatabaseSettings": {
-    "MasterConnection": "Host=localhost;Port=5432;Database=SaaSifyMasterDb;Username=postgres;Password=postgres"
-  },
-
-  "Jwt": {
-    "Key": "your-super-secret-key-at-least-32-characters",
-    "Issuer": "SaaSify",
-    "Audience": "SaaSifyUsers",
-    "ExpiryMinutes": 60
-  }
-}
+```text
+DatabaseSettings__MasterConnection
+Jwt__Key
 ```
 
-Use your own PostgreSQL credentials.
+`dotnet ef` commands read the same user-secrets and environment variables.
 
 ---
 

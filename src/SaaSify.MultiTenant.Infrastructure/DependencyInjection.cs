@@ -28,11 +28,22 @@ public static class DependencyInjection
     {
         services.AddHttpContextAccessor();
 
+        var masterConnection =
+            configuration["DatabaseSettings:MasterConnection"];
+
+        if (string.IsNullOrWhiteSpace(masterConnection))
+        {
+            throw new InvalidOperationException(
+                "DatabaseSettings:MasterConnection is not configured. " +
+                "Set it with `dotnet user-secrets` or the " +
+                "DatabaseSettings__MasterConnection environment variable.");
+        }
+
         services.Configure<DatabaseSettings>(configuration.GetSection("DatabaseSettings"));
 
         services.AddDbContext<MasterDbContext>(options =>
         {
-            options.UseNpgsql(configuration["DatabaseSettings:MasterConnection"]);
+            options.UseNpgsql(masterConnection);
         });
 
         services.AddDbContext<TenantDbContext>(
@@ -78,6 +89,16 @@ public static class DependencyInjection
         var jwtSettings =
             configuration.GetSection("Jwt")
                 .Get<JwtSettings>();
+
+        // HMAC-SHA256 needs a key of at least 256 bits.
+        if (jwtSettings is null
+            || string.IsNullOrWhiteSpace(jwtSettings.Key)
+            || Encoding.UTF8.GetByteCount(jwtSettings.Key) < 32)
+        {
+            throw new InvalidOperationException(
+                "Jwt:Key is missing or shorter than 32 bytes. " +
+                "Set it with `dotnet user-secrets` or the Jwt__Key environment variable.");
+        }
 
         services.AddAuthentication(options =>
         {
