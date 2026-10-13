@@ -157,7 +157,9 @@ public static class DependencyInjection
 
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
+        services.AddMemoryCache();
         services.AddScoped<ITenantProvider, TenantProvider>();
+        services.AddScoped<ITenantResolver, CachedTenantResolver>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
         return services;

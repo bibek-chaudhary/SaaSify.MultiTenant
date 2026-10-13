@@ -1,8 +1,6 @@
 using SaaSify.MultiTenant.Api.Responses;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
-using SaaSify.MultiTenant.Application.Common;
 using SaaSify.MultiTenant.Application.Common.Interfaces;
-using SaaSify.MultiTenant.Infrastructure.Persistence.Contexts;
 
 namespace SaaSify.MultiTenant.Api.Middlewares;
 
@@ -20,15 +18,15 @@ public class TenantMiddleware
         HttpContext context,
         ICurrentUserService currentUserService,
         ITenantProvider tenantProvider,
-        MasterDbContext masterDbContext)
+        ITenantResolver tenantResolver)
     {
         if (currentUserService.IsAuthenticated
             && currentUserService.TenantId.HasValue)
         {
             var tenant =
-                await masterDbContext.Tenants
-                    .FindAsync(
-                        currentUserService.TenantId.Value);
+                await tenantResolver.ResolveAsync(
+                    currentUserService.TenantId.Value,
+                    context.RequestAborted);
 
             if (tenant is null)
             {
@@ -46,13 +44,7 @@ public class TenantMiddleware
                 return;
             }
 
-            tenantProvider.SetTenant(
-                new TenantInfo
-                {
-                    TenantId = tenant.Id,
-                    Identifier = tenant.TenantId,
-                    ConnectionString = tenant.DbConnStr
-                });
+            tenantProvider.SetTenant(tenant);
         }
 
         await _next(context);
