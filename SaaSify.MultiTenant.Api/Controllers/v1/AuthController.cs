@@ -1,6 +1,8 @@
 ﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using SaaSify.MultiTenant.Api.Extensions;
 using SaaSify.MultiTenant.Application.Features.Auth.Commands.Login;
 using SaaSify.MultiTenant.Application.Features.Auth.DTOs;
 using SaaSify.MultiTenant.Api.Responses;
@@ -20,6 +22,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting(RateLimitPolicies.Login)]
     public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {
         var response =

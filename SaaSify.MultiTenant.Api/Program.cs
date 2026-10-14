@@ -58,6 +58,8 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseRateLimiter();
+
 app.UseAuthentication();
 
 app.UseMiddleware<TenantMiddleware>();

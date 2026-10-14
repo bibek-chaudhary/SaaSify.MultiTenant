@@ -11,10 +11,14 @@ public class IdentityService : IIdentityService
 {
     private readonly UserManager<IdentityApplicationUser> _userManager;
 
+    private readonly SignInManager<IdentityApplicationUser> _signInManager;
+
     public IdentityService(
-        UserManager<IdentityApplicationUser> userManager)
+        UserManager<IdentityApplicationUser> userManager,
+        SignInManager<IdentityApplicationUser> signInManager)
     {
         _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     public async Task<(bool Success, Guid UserId, string Email, string Role, Guid? TenantId)>
@@ -28,12 +32,21 @@ public class IdentityService : IIdentityService
             return default;
         }
 
-        var validPassword =
-            await _userManager.CheckPasswordAsync(
+        // Counts failed attempts and enforces Identity's lockout settings,
+        // unlike UserManager.CheckPasswordAsync.
+        var result =
+            await _signInManager.CheckPasswordSignInAsync(
                 user,
-                password);
+                password,
+                lockoutOnFailure: true);
 
-        if (!validPassword)
+        if (result.IsLockedOut)
+        {
+            throw new UnauthorizedException(
+                "Account is temporarily locked due to too many failed login attempts. Try again later.");
+        }
+
+        if (!result.Succeeded)
         {
             return default;
         }

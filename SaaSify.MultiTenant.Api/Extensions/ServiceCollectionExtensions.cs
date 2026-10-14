@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using SaaSify.MultiTenant.Api.Responses;
+using System.Threading.RateLimiting;
 
 namespace SaaSify.MultiTenant.Api.Extensions;
 
@@ -10,6 +11,40 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers();
+
+        services.AddRateLimiter(options =>
+        {
+            // Per-IP cap on login attempts; per-account lockout is handled by Identity.
+            options.AddPolicy(RateLimitPolicies.Login, httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 10,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 0
+                    }));
+
+            options.OnRejected = async (context, cancellationToken) =>
+            {
+                context.HttpContext.Response.StatusCode =
+                    StatusCodes.Status429TooManyRequests;
+
+                if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                {
+                    context.HttpContext.Response.Headers.RetryAfter =
+                        ((int)retryAfter.TotalSeconds).ToString();
+                }
+
+                await context.HttpContext.Response.WriteAsJsonAsync(
+                    new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "Too many requests. Try again later."
+                    },
+                    cancellationToken);
+            };
+        });
 
         services.AddApiVersioning(options =>
         {
