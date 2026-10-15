@@ -154,6 +154,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<JwtSecurityStampValidator>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<ITenantDatabaseService, TenantDatabaseService>();
 

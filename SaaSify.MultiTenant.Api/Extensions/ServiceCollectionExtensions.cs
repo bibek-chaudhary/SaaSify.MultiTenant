@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using SaaSify.MultiTenant.Api.Responses;
+using SaaSify.MultiTenant.Infrastructure.Authentication;
 using System.Threading.RateLimiting;
 
 namespace SaaSify.MultiTenant.Api.Extensions;
@@ -107,6 +108,18 @@ public static class ServiceCollectionExtensions
             {
                 options.Events = new JwtBearerEvents
                 {
+                    OnTokenValidated = async context =>
+                    {
+                        var validator =
+                            context.HttpContext.RequestServices
+                                .GetRequiredService<JwtSecurityStampValidator>();
+
+                        if (!await validator.ValidateAsync(context.Principal!))
+                        {
+                            context.Fail("Token has been revoked.");
+                        }
+                    },
+
                     OnChallenge = async context =>
                     {
                         context.HandleResponse();
@@ -117,7 +130,9 @@ public static class ServiceCollectionExtensions
                             new ApiResponse<object>
                             {
                                 Success = false,
-                                Message = "Authentication required."
+                                Message = context.AuthenticateFailure is null
+                                    ? "Authentication required."
+                                    : "Invalid, expired or revoked token."
                             });
                     },
 

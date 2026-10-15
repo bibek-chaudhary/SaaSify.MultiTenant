@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using SaaSify.MultiTenant.Infrastructure.Identity.Entities;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using SaaSify.MultiTenant.Application.Abstractions.Authentication;
@@ -14,25 +16,37 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings;
 
+    private readonly UserManager<IdentityApplicationUser> _userManager;
+
     public JwtTokenGenerator(
-        IOptions<JwtSettings> jwtOptions)
+        IOptions<JwtSettings> jwtOptions,
+        UserManager<IdentityApplicationUser> userManager)
     {
         _jwtSettings = jwtOptions.Value;
+        _userManager = userManager;
     }
 
-    public Task<(string Token, DateTime ExpiresAtUtc)> GenerateTokenAsync(
+    public async Task<(string Token, DateTime ExpiresAtUtc)> GenerateTokenAsync(
         Guid userId,
         string email,
         string role,
         Guid? tenantId)
     {
+        var user =
+            await _userManager.FindByIdAsync(userId.ToString())
+            ?? throw new InvalidOperationException(
+                $"User '{userId}' not found.");
+
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, userId.ToString()),
 
             new(ClaimTypes.Email, email),
 
-            new(ClaimTypes.Role, role)
+            new(ClaimTypes.Role, role),
+
+            new(JwtSecurityStampValidator.ClaimType,
+                await _userManager.GetSecurityStampAsync(user))
         };
 
         if (tenantId.HasValue)
@@ -65,6 +79,6 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new JwtSecurityTokenHandler()
                 .WriteToken(token);
 
-        return Task.FromResult((jwt, expiresAtUtc));
+        return (jwt, expiresAtUtc);
     }
 }

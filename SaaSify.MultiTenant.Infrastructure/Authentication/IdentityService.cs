@@ -13,12 +13,16 @@ public class IdentityService : IIdentityService
 
     private readonly SignInManager<IdentityApplicationUser> _signInManager;
 
+    private readonly JwtSecurityStampValidator _securityStampValidator;
+
     public IdentityService(
         UserManager<IdentityApplicationUser> userManager,
-        SignInManager<IdentityApplicationUser> signInManager)
+        SignInManager<IdentityApplicationUser> signInManager,
+        JwtSecurityStampValidator securityStampValidator)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _securityStampValidator = securityStampValidator;
     }
 
     public async Task<(bool Success, Guid UserId, string Email, string Role, Guid? TenantId)>
@@ -177,6 +181,11 @@ public class IdentityService : IIdentityService
                 string.Join(", ",
                     result.Errors.Select(x => x.Description)));
         }
+
+        // Existing tokens carry the old email, so revoke them.
+        await _userManager.UpdateSecurityStampAsync(user);
+
+        _securityStampValidator.Invalidate(user.Id);
     }
 
     public async Task DeleteUserAsync(Guid userId)
@@ -191,6 +200,8 @@ public class IdentityService : IIdentityService
         }
 
         await _userManager.DeleteAsync(user);
+
+        _securityStampValidator.Invalidate(user.Id);
     }
 
     public async Task DeleteUsersByTenantAsync(Guid tenantId)
@@ -212,6 +223,8 @@ public class IdentityService : IIdentityService
                     string.Join(", ",
                         result.Errors.Select(x => x.Description)));
             }
+
+            _securityStampValidator.Invalidate(user.Id);
         }
     }
 }
